@@ -28,7 +28,6 @@ namespace MyBasketStats.API.Entities
         public Statsheet TotalStatsheet { get; set; }
         public int TotalStathseetId { get; set; }
 
-
         public ContractDto? Contract { get; set; }
         public int ContractId { get; set; }
     }

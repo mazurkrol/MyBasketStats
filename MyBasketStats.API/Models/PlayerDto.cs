@@ -22,7 +22,7 @@ namespace MyBasketStats.API.Models
         public int TeamId { get; set; }
 
         public StatsheetDto TotalStatsheet { get; set; }
-        public int TotalStathseetId { get; set; }
+        public int TotalStatsheetId { get; set; }
 
         public ContractDto? Contract { get; set; }
         public int ContractId { get; set; }

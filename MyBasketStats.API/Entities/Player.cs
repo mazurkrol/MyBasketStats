@@ -23,12 +23,14 @@ namespace MyBasketStats.API.Entities
         public string Position { get; set; }
 
         public Team? Team { get; set; }
-        public int TeamId { get; set; }
+        public int? TeamId { get; set; }
 
         public Statsheet TotalStatsheet { get; set; }
-        public int TotalStathseetId { get; set; }
+        public int TotalStatsheetId { get; set; }
 
-        public ContractDto? Contract { get; set; }
-        public int ContractId { get; set; }
+        public Contract? Contract { get; set; }
+        public int? ContractId { get; set; }
+
+        public ICollection<Statsheet> SeasonalStatsheets { get; set; }
     }
 }

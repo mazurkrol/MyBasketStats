@@ -8,9 +8,11 @@ namespace MyBasketStats.API.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [ForeignKey("ChampionshipTeamId")]
         public Team? ChampionshipTeam { get; set; }
-        public int ChampionshipTeamId { get; set; }
+        public int? ChampionshipTeamId { get; set; }
+        [ForeignKey("FinalsMvpId")]
         public Player? FinalsMvp { get; set; }
-        public int FinalsMvpId { get; set; }
+        public int? FinalsMvpId { get; set; }
     }
 }

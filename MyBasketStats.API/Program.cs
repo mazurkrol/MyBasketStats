@@ -10,6 +10,7 @@ using System.Reflection;
 using Microsoft.OpenApi.Models;
 using MyBasketStats.API.DbContexts;
 using MyBasketStats.API.Services.TeamServices;
+using MyBasketStats.API.Services.PlayerServices;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -31,6 +32,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
 builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<MyBasketStatsContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:MyBasketStatsDBConnectionString"]));

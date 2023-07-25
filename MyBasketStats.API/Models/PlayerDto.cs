@@ -18,13 +18,11 @@ namespace MyBasketStats.API.Models
         
         public string Position { get; set; }
 
-        public TeamDto? Team { get; set; }
-        public int TeamId { get; set; }
+        public int? TeamId { get; set; }
 
-        public StatsheetDto TotalStatsheet { get; set; }
         public int TotalStatsheetId { get; set; }
 
-        public ContractDto? Contract { get; set; }
-        public int ContractId { get; set; }
+        public int? ContractId { get; set; }
+        public ICollection<Statsheet> SeasonalStatsheets { get; set; }
     }
 }

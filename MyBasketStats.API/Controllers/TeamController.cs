@@ -75,6 +75,20 @@ namespace MyBasketStats.API.Controllers
             }
         }
 
+        [HttpDelete("{teamtodeleteid}")]
+        public async Task<ActionResult> DeleteTeam(int teamtodeleteid)
+        {
+            var operationResult = await _teamService.DeleteByIdAsync(teamtodeleteid);
+            if(operationResult.IsSuccess)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(operationResult.HttpResponseCode, operationResult.ErrorMessage);
+            }
+        }
+
 
     }
 }

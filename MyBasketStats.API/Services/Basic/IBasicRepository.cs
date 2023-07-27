@@ -4,5 +4,8 @@
     {
         Task<TEntity> GetByIdAsync(int id);
         Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<(bool,TEntity?)> CheckIfIdExistsAsync(int id);
+        void DeleteAsync(TEntity entity);
+        Task SaveChangesAsync();
     }
 }

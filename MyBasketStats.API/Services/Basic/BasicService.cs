@@ -32,5 +32,33 @@ namespace MyBasketStats.API.Services.Basic
             var finalListToReturn = _mapper.Map<IEnumerable<TDto>>(listToReturn);
             return finalListToReturn;
         }
+
+        public async Task<(bool,TEntity?)> CheckIfIdExistsAsync(int id)
+        {
+            return await _basicRepository.CheckIfIdExistsAsync(id);
+        }
+        public async Task<OperationResult<TDto>> DeleteByIdAsync(int id)
+        {
+            (bool exists, TEntity ? entity) result = await _basicRepository.CheckIfIdExistsAsync(id);
+            if (result.exists == false)
+            {
+                return new OperationResult<TDto>
+                {
+                    IsSuccess = false,
+                    ErrorMessage = $"Entity of type {typeof(TEntity).Name} with id={id} does not exist.",
+                    HttpResponseCode = 404
+                };
+            }
+            else
+            {
+                _basicRepository.DeleteAsync(result.entity);
+                await _basicRepository.SaveChangesAsync();
+                return new OperationResult<TDto>
+                {
+                    IsSuccess = true,
+                    HttpResponseCode = 204
+                };
+            }
+        }
     }
 }

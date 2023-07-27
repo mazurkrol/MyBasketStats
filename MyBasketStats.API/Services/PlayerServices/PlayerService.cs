@@ -1,17 +1,16 @@
 ﻿using AutoMapper;
 using MyBasketStats.API.Entities;
 using MyBasketStats.API.Models;
+using MyBasketStats.API.Services.Basic;
 
 namespace MyBasketStats.API.Services.PlayerServices
 {
-    public class PlayerService : IPlayerService
+    public class PlayerService : BasicService<PlayerDto, Player>, IPlayerService
     {
         private readonly IPlayerRepository _playerRepository;
-        private readonly IMapper _mapper;
-        public PlayerService(IPlayerRepository playerRepository, IMapper mapper)
+        public PlayerService(IMapper mapper, IBasicRepository<Player> basicRepository, IPlayerRepository playerRepository) : base(mapper, basicRepository)
         {
             _playerRepository=playerRepository;
-            _mapper=mapper;
         }
         
         public async Task<PlayerDto> AddPlayerAsync(PlayerForCreationDto player)

@@ -19,6 +19,52 @@ namespace MyBasketStats.API.Controllers
         {
             _teamService=teamService ?? throw new ArgumentNullException(nameof(teamService));
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TeamDto>>> GetTeams()
+        {
+            var teams = await _teamService.GetAllAsync();
+            return Ok(teams);
+        }
+        [HttpGet("{teamid}", Name = "GetTeam")]
+        public async Task<ActionResult<TeamDto>> GetTeam(int teamid)
+        {
+            if (ModelState.IsValid)
+            {
+                var item = await _teamService.GetByIdAsync(teamid);
+                if (item!=null)
+                {
+                    return Ok(item);
+                }
+                else
+                {
+                    return NotFound();
+                }
+
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+        [HttpDelete("{teamtodeleteid}")]
+        public async Task<ActionResult> DeleteTeam(int teamtodeleteid)
+        {
+            var operationResult = await _teamService.DeleteByIdAsync(teamtodeleteid);
+            if (operationResult.IsSuccess)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(operationResult.HttpResponseCode, operationResult.ErrorMessage);
+            }
+        }
+
+
+
+
         [HttpPost]
         public async Task<ActionResult<TeamDto>> CreateTeam(TeamForCreationDto team)
         {
@@ -47,47 +93,7 @@ namespace MyBasketStats.API.Controllers
                 return BadRequest(ModelState);
             }
         }
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TeamDto>>> GetTeams()
-        {
-            var teams= await _teamService.GetAllAsync();
-            return Ok(teams);
-        }
-        [HttpGet("{teamid}",Name="GetTeam")]
-        public async Task<ActionResult<TeamDto>> GetTeam(int teamid)
-        {
-            if(ModelState.IsValid)
-            {
-                var item = await _teamService.GetByIdAsync(teamid);
-                if(item!=null)
-                {
-                    return Ok(item);
-                }
-                else
-                {
-                    return NotFound();
-                }
-                
-            }
-            else 
-            { 
-                return BadRequest(ModelState); 
-            }
-        }
-
-        [HttpDelete("{teamtodeleteid}")]
-        public async Task<ActionResult> DeleteTeam(int teamtodeleteid)
-        {
-            var operationResult = await _teamService.DeleteByIdAsync(teamtodeleteid);
-            if(operationResult.IsSuccess)
-            {
-                return NoContent();
-            }
-            else
-            {
-                return StatusCode(operationResult.HttpResponseCode, operationResult.ErrorMessage);
-            }
-        }
+        
 
 
     }

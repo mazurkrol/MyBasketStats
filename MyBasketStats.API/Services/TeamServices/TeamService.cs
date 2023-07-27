@@ -2,31 +2,41 @@
 using Microsoft.AspNetCore.Mvc;
 using MyBasketStats.API.Entities;
 using MyBasketStats.API.Models;
+using MyBasketStats.API.Services.Basic;
 namespace MyBasketStats.API.Services.TeamServices
 {
-    public class TeamService : ITeamService
+    public class TeamService : BasicService<TeamDto,Team>, ITeamService
     {
-        private readonly IMapper _mapper;
         private readonly ITeamRepository _teamRepository;
-        public TeamService(IMapper mapper, ITeamRepository teamRepository)
+        public TeamService(IMapper mapper, IBasicRepository<Team> basicRepository, ITeamRepository teamRepository) : base(mapper,basicRepository)
         {
-            _mapper=mapper;
-            _teamRepository=teamRepository;
+            _teamRepository = teamRepository;
         }
 
-        public async Task<TeamDto> AddTeamAsync(TeamForCreationDto team)
+        public async Task<OperationResult<TeamDto>> AddTeamAsync(TeamForCreationDto team)
         {
             var teamToAdd = _mapper.Map<Team>(team);
             bool IsNameTaken = await CheckIfTeamExistsAsync(team.Name);
-            if (IsNameTaken) 
+
+            if (IsNameTaken)
             {
-                return null; 
+                return new OperationResult<TeamDto>
+                {
+                    IsSuccess = false,
+                    ErrorMessage = "Provided name is already taken.",
+                    HttpResponseCode = 409
+                };
             }
             else
             {
-                await _teamRepository.AddTeamToDbAsync(teamToAdd);
+                await _teamRepository.AddTeamToDbAsync(teamToAdd);       
                 var teamToReturn = _mapper.Map<TeamDto>(teamToAdd);
-                return teamToReturn;
+                return new OperationResult<TeamDto>
+                {
+                    IsSuccess = true,
+                    Data = teamToReturn,
+                    HttpResponseCode = 201
+                };
             }
         }
         public async Task<bool> CheckIfTeamExistsAsync(string name)
@@ -41,11 +51,6 @@ namespace MyBasketStats.API.Services.TeamServices
                 return true;
             }
         }
-        public async Task<TeamDto> GetTeamByIdAsync(int id)
-        {
-            var item = await _teamRepository.GetTeamByIdAsync(id);
-            var itemToReturn = _mapper.Map<TeamDto>(item);
-            return itemToReturn;
-        }
+        
     }
 }

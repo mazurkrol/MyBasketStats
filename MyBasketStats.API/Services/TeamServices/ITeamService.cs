@@ -4,8 +4,9 @@ namespace MyBasketStats.API.Services.TeamServices
 {
     public interface ITeamService
     {
-        Task<TeamDto> AddTeamAsync(TeamForCreationDto team);
+        Task<OperationResult<TeamDto>> AddTeamAsync(TeamForCreationDto team);
         Task<bool> CheckIfTeamExistsAsync(string name);
-        Task<TeamDto> GetTeamByIdAsync(int id);
+        Task<TeamDto> GetByIdAsync(int id);
+        Task<IEnumerable<TeamDto>> GetAllAsync();
     }
 }

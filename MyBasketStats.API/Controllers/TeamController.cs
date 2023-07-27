@@ -25,20 +25,20 @@ namespace MyBasketStats.API.Controllers
             
             if(ModelState.IsValid)
             {
-               var createdTeam = await _teamService.AddTeamAsync(team);
-                if(createdTeam!=null)
+               var operationResult = await _teamService.AddTeamAsync(team);
+                if(operationResult.IsSuccess==true)
                 {
                     return CreatedAtRoute("GetTeam",
                 new
                 {
-                    teamid=createdTeam.Id
+                    teamid=operationResult.Data.Id
                 },
-                createdTeam
+                operationResult.Data
                 );
                 }
                 else
                 {
-                    return StatusCode(409, "Provided name is already taken.");
+                    return StatusCode(operationResult.HttpResponseCode, operationResult.ErrorMessage);
                 }
                 
             }
@@ -47,12 +47,18 @@ namespace MyBasketStats.API.Controllers
                 return BadRequest(ModelState);
             }
         }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TeamDto>>> GetTeams()
+        {
+            var teams= await _teamService.GetAllAsync();
+            return Ok(teams);
+        }
         [HttpGet("{teamid}",Name="GetTeam")]
         public async Task<ActionResult<TeamDto>> GetTeam(int teamid)
         {
             if(ModelState.IsValid)
             {
-                var item = await _teamService.GetTeamByIdAsync(teamid);
+                var item = await _teamService.GetByIdAsync(teamid);
                 if(item!=null)
                 {
                     return Ok(item);

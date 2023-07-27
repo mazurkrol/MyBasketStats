@@ -18,7 +18,7 @@ namespace MyBasketStats.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddPlayerAsync(PlayerForCreationDto player)
+        public async Task<ActionResult> AddPlayer(PlayerForCreationDto player)
         {
             if (ModelState.IsValid)
             {
@@ -40,5 +40,10 @@ namespace MyBasketStats.API.Controllers
                 return BadRequest(ModelState);
             }
         }
+        //[HttpGet("{playerid}",Name = "GetPlayer")]
+        //public async Task<ActionResult> GetPlayer(int playerid)
+        //{
+
+        //}
     }
 }

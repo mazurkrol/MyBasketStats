@@ -7,8 +7,6 @@ namespace MyBasketStats.API.Models
     public class StatsheetDto
     {
         public int Id { get; set; }
-        public PlayerDto Player { get; set; }
-        public int PlayerId { get; set; }
         public SeasonDto? Season { get; set; }
         public int? SeasonId { get; set; }
         public int GamesPlayed { get; set; }

@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using MyBasketStats.API.DbContexts;
 using MyBasketStats.API.Services.TeamServices;
 using MyBasketStats.API.Services.PlayerServices;
+using MyBasketStats.API.Services.StatsheetServices;
 using MyBasketStats.API.Services.Basic;
 using MyBasketStats.API.Entities;
 
@@ -36,8 +37,11 @@ builder.Services.AddScoped<ITeamService, TeamService>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<IStatsheetService, StatsheetService>();
+builder.Services.AddScoped<IStatsheetRepository, StatsheetRepository>();
 builder.Services.AddScoped<IBasicRepository<Player>, BasicRepository<Player>>();
 builder.Services.AddScoped<IBasicRepository<Team>, BasicRepository<Team>>();
+builder.Services.AddScoped<IBasicRepository<Statsheet>, BasicRepository<Statsheet>>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<MyBasketStatsContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:MyBasketStatsDBConnectionString"]));

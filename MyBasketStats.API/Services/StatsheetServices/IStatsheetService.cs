@@ -4,7 +4,7 @@ using MyBasketStats.API.Services.Basic;
 
 namespace MyBasketStats.API.Services.StatsheetServices
 {
-    public interface ISeasonService : IBasicService<StatsheetDto, Statsheet>
+    public interface IStatsheetService : IBasicService<StatsheetDto, Statsheet>
     {
     }
 }

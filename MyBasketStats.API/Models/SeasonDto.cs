@@ -7,6 +7,7 @@ namespace MyBasketStats.API.Models
     public class SeasonDto
     {
         public int Id { get; set; }
+        public int Year { get; set; }
         public TeamDto? ChampionshipTeam { get; set; }
         public int ChampionshipTeamId { get; set; }
         public PlayerDto? FinalsMvp { get; set; }

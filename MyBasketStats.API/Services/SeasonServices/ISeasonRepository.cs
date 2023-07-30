@@ -6,5 +6,7 @@ namespace MyBasketStats.API.Services.SeasonServices
 {
     public interface ISeasonRepository
     {
+        Task AddSeasonToDbAsync(Season season);
+        Task CreateSeasonalStatsheetsAsync(Season season);
     }
 }

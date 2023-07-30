@@ -7,6 +7,7 @@ namespace MyBasketStats.API.Profiles
         public SeasonProfile() 
         {
             CreateMap<Entities.Season, Models.SeasonDto>();
+            CreateMap<Models.SeasonForCreationDto, Entities.Season>();
         }
         
     }

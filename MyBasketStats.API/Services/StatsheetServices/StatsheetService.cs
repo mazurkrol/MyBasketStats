@@ -6,7 +6,7 @@ using MyBasketStats.API.Services.TeamServices;
 
 namespace MyBasketStats.API.Services.StatsheetServices
 {
-    public class StatsheetService : BasicService<StatsheetDto, Statsheet>, ISeasonService
+    public class StatsheetService : BasicService<StatsheetDto, Statsheet>, IStatsheetService
     {
         private readonly IStatsheetRepository _statsheetRepository;
         public StatsheetService(IMapper mapper, IBasicRepository<Statsheet> basicRepository, IStatsheetRepository statsheetRepository) : base(mapper, basicRepository)

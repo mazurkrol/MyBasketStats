@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MyBasketStats.API.Models;
-using MyBasketStats.API.Services.StatsheetServices;
+using MyBasketStats.API.Services.SeasonServices;
 
 namespace MyBasketStats.API.Controllers
 {
@@ -47,7 +47,7 @@ namespace MyBasketStats.API.Controllers
         }
 
         [HttpDelete("{seasontodeleteid}")]
-        public async Task<ActionResult> DeleteStatsheet(int seasontodeleteid)
+        public async Task<ActionResult> DeleteSeason(int seasontodeleteid)
         {
             var operationResult = await _seasonService.DeleteByIdAsync(seasontodeleteid);
             if (operationResult.IsSuccess)
@@ -57,6 +57,26 @@ namespace MyBasketStats.API.Controllers
             else
             {
                 return StatusCode(operationResult.HttpResponseCode, operationResult.ErrorMessage);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<SeasonDto>> CreateSeason(SeasonForCreationDto season)
+        {
+            if(ModelState.IsValid) 
+            {
+                var seasonToReturn = await _seasonService.AddSeasonAsync(season);
+
+                return CreatedAtRoute("GetSeason",
+                    new
+                    {
+                        seasonid = seasonToReturn.Id
+                    },
+                    seasonToReturn);
+            }
+            else
+            { 
+                return BadRequest(ModelState);
             }
         }
     }

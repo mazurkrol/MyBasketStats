@@ -14,6 +14,15 @@ namespace MyBasketStats.API.Services.SeasonServices
             _seasonRepository=seasonRepository;
         }
 
-        
+        public async Task<SeasonDto> AddSeasonAsync(SeasonForCreationDto season)
+        {
+            var seasonToAdd = _mapper.Map<Season>(season);
+
+            await _seasonRepository.AddSeasonToDbAsync(seasonToAdd);
+            await _seasonRepository.CreateSeasonalStatsheetsAsync(seasonToAdd);
+            var seasonToReturn = _mapper.Map<SeasonDto>(seasonToAdd);
+            return seasonToReturn;
+
+        }
     }
 }

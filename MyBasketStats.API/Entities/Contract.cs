@@ -9,7 +9,7 @@ namespace MyBasketStats.API.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
-        public int Salary { get; set; }
-        public ICollection<Season> Seasons { get; set; }
+        public int SalaryInUsd { get; set; }
+        public ICollection<Season> Seasons { get; set; } = new List<Season>();
     }
 }

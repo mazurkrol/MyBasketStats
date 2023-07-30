@@ -4,6 +4,7 @@ using MyBasketStats.API.Models;
 using MyBasketStats.API.Services.TeamServices;
 using System.Runtime.CompilerServices;
 using MyBasketStats.API.Entities;
+using MyBasketStats.API.Services.PlayerServices;
 
 namespace MyBasketStats.API.Controllers
 {
@@ -13,11 +14,13 @@ namespace MyBasketStats.API.Controllers
     public class TeamController : ControllerBase
     {
         private readonly ITeamService _teamService;
+        private readonly IPlayerService _playerService;
 
 
-        public TeamController(ITeamService teamService, IMapper mapper)
+        public TeamController(ITeamService teamService, IMapper mapper, IPlayerService playerService)
         {
             _teamService=teamService ?? throw new ArgumentNullException(nameof(teamService));
+            _playerService=playerService ?? throw new ArgumentNullException(nameof(playerService));
         }
 
         [HttpGet]
@@ -62,7 +65,45 @@ namespace MyBasketStats.API.Controllers
             }
         }
 
+        [HttpPost("{playerid},{teamid}")]
+        public async Task<ActionResult<ContractDto>> SignPlayerContract(ContractForCreationDto contract, int playerid, int teamid)
+        {
+            if (ModelState.IsValid) 
+            {
+                (bool, Player?) playerExist = await _playerService.CheckIfIdExistsAsync(playerid);
+                if (!playerExist.Item1)
+                {
+                    return NotFound($"Player with id={playerid} was not found.");
+                }
 
+                if(playerExist.Item2.TeamId != null)
+                {
+                    return StatusCode(403, $"Player with id={playerid} is already taken.");
+                }
+                    
+                (bool, Team?) teamExist = await _teamService.CheckIfIdExistsAsync(teamid);
+                if (!teamExist.Item1)
+                {
+                    return NotFound($"Team with id={teamid} was not found.");
+                }
+
+                var operationResult = await _playerService.SignPlayerAsync(contract, playerExist.Item2, teamExist.Item2);
+
+                if(operationResult.IsSuccess)
+                {
+                    await _teamService.AddPlayerToRosterAsync(playerExist.Item2, teamExist.Item2);
+                    return NoContent();
+                }
+                else
+                {
+                    return StatusCode(operationResult.HttpResponseCode, operationResult.ErrorMessage);
+                }
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
 
 
         [HttpPost]

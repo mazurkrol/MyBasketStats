@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyBasketStats.API.DbContexts;
 using MyBasketStats.API.Entities;
+using MyBasketStats.API.Services.PlayerServices;
+
 namespace MyBasketStats.API.Services.TeamServices
 {
     public class TeamRepository : ITeamRepository
@@ -21,9 +23,12 @@ namespace MyBasketStats.API.Services.TeamServices
                 .Where(c => c.Name == name)
                 .FirstOrDefaultAsync();
         }
-        public async Task<Team> GetTeamByIdAsync(int id)
+
+        public async Task AddPlayerAsync(Player player, Team team)
         {
-            return await _context.Teams.Where(c => c.Id == id).FirstOrDefaultAsync();
+            team.Players.Add(player);
+            await _context.SaveChangesAsync();
         }
+
     }
 }

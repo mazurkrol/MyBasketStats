@@ -51,6 +51,10 @@ namespace MyBasketStats.API.Services.TeamServices
                 return true;
             }
         }
+        public async Task AddPlayerToRosterAsync(Player player, Team team)
+        {
+            await _teamRepository.AddPlayerAsync(player, team);
+        }
         
     }
 }

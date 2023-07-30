@@ -14,5 +14,10 @@ namespace MyBasketStats.API.Services.PlayerServices
             await _context.Players.AddAsync(player);
             await _context.SaveChangesAsync();
         }
+        public async Task AddNewPlayerContract(Player player, Contract contract) 
+        {
+            player.Contract = contract;
+            await _context.SaveChangesAsync();
+        }
     }
 }

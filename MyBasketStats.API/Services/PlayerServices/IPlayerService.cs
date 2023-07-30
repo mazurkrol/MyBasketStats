@@ -7,6 +7,7 @@ namespace MyBasketStats.API.Services.PlayerServices
     public interface IPlayerService : IBasicService<PlayerDto, Player>
     {
         Task<PlayerDto> AddPlayerAsync(PlayerForCreationDto player);
+        Task<OperationResult<ContractDto>> SignPlayerAsync(ContractForCreationDto contract, Player player, Team team);
         //Task<PlayerDto> GetTeamByIdAsync(int id);
     }
 }

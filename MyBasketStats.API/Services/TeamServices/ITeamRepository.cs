@@ -6,6 +6,6 @@ namespace MyBasketStats.API.Services.TeamServices
     {
         Task AddTeamToDbAsync(Team team);
         Task<Team> GetTeamByNameAsync(string name);
-        Task<Team> GetTeamByIdAsync(int id);
+        Task AddPlayerAsync(Player player, Team team);
     }
 }

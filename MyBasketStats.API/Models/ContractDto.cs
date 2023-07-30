@@ -8,7 +8,7 @@ namespace MyBasketStats.API.Models
     public class ContractDto
     {
         public int Id { get; set; }
-        public int Salary { get; set; }
+        public int SalaryInUsd { get; set; }
         public List<SeasonDto> Seasons { get; set; }
     }
 }

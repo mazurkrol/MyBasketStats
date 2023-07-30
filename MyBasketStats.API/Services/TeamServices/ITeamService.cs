@@ -10,6 +10,7 @@ namespace MyBasketStats.API.Services.TeamServices
         Task<OperationResult<TeamDto>> AddTeamAsync(TeamForCreationDto team);
         Task<bool> CheckIfTeamExistsAsync(string name);
         Task AddPlayerToRosterAsync(Player player, Team team);
+        Task WaivePlayerAsync(Player player, Team team);
 
 
     }

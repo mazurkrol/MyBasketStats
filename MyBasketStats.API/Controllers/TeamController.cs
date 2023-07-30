@@ -68,7 +68,7 @@ namespace MyBasketStats.API.Controllers
         [HttpPost("{playerid},{teamid}")]
         public async Task<ActionResult<ContractDto>> SignPlayerContract(ContractForCreationDto contract, int playerid, int teamid)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 (bool, Player?) playerExist = await _playerService.CheckIfIdExistsAsync(playerid);
                 if (!playerExist.Item1)
@@ -76,11 +76,11 @@ namespace MyBasketStats.API.Controllers
                     return NotFound($"Player with id={playerid} was not found.");
                 }
 
-                if(playerExist.Item2.TeamId != null)
+                if (playerExist.Item2.TeamId != null)
                 {
                     return StatusCode(403, $"Player with id={playerid} is already taken.");
                 }
-                    
+
                 (bool, Team?) teamExist = await _teamService.CheckIfIdExistsAsync(teamid);
                 if (!teamExist.Item1)
                 {
@@ -89,10 +89,10 @@ namespace MyBasketStats.API.Controllers
 
                 var operationResult = await _playerService.SignPlayerAsync(contract, playerExist.Item2, teamExist.Item2);
 
-                if(operationResult.IsSuccess)
+                if (operationResult.IsSuccess)
                 {
                     await _teamService.AddPlayerToRosterAsync(playerExist.Item2, teamExist.Item2);
-                    return NoContent();
+                    return Ok(operationResult.Data);
                 }
                 else
                 {
@@ -103,6 +103,29 @@ namespace MyBasketStats.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+        }
+
+        [HttpDelete("{playerid},{teamid}")]
+        public async Task<ActionResult> WaivePlayer(int playerid, int teamid)
+        {
+            (bool, Player?) playerExist = await _playerService.CheckIfIdExistsAsync(playerid);
+            if (!playerExist.Item1)
+            {
+                return NotFound($"Player with id={playerid} was not found.");
+            }
+
+            if (playerExist.Item2.TeamId != teamid)
+            {
+                return StatusCode(403, $"Player with id={playerid} is not a member of team with id={teamid}.");
+            }
+
+            (bool, Team?) teamExist = await _teamService.CheckIfIdExistsAsync(teamid);
+            if (!teamExist.Item1)
+            {
+                return NotFound($"Team with id={teamid} was not found.");
+            }
+            await _teamService.WaivePlayerAsync(playerExist.Item2, teamExist.Item2);
+            return NoContent();
         }
 
 

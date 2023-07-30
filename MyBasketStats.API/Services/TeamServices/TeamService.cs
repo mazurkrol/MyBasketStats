@@ -55,6 +55,10 @@ namespace MyBasketStats.API.Services.TeamServices
         {
             await _teamRepository.AddPlayerAsync(player, team);
         }
-        
+        public async Task WaivePlayerAsync(Player player, Team team)
+        {
+            team.Players.Remove(player);
+            await _basicRepository.SaveChangesAsync();
+        }
     }
 }

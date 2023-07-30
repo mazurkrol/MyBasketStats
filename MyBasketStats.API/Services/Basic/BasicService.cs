@@ -12,7 +12,7 @@ namespace MyBasketStats.API.Services.Basic
     public class BasicService<TDto, TEntity> where TEntity : class where TDto : class
     {
         protected readonly IMapper _mapper;
-        private readonly IBasicRepository<TEntity> _basicRepository;
+        protected readonly IBasicRepository<TEntity> _basicRepository;
         public BasicService(IMapper mapper, IBasicRepository<TEntity> basicRepository)
         {
             _mapper=mapper;

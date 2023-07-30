@@ -10,10 +10,10 @@ namespace MyBasketStats.API.Controllers
     [Route("api/statsheets")]
     public class StatsheetController : ControllerBase
     {
-        private readonly IStatsheetService _statsheetService;
+        private readonly ISeasonService _statsheetService;
 
 
-        public StatsheetController(IStatsheetService statsheetService, IMapper mapper)
+        public StatsheetController(ISeasonService statsheetService, IMapper mapper)
         {
             _statsheetService=statsheetService ?? throw new ArgumentNullException(nameof(statsheetService));
         }

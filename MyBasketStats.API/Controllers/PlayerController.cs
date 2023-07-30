@@ -68,10 +68,10 @@ namespace MyBasketStats.API.Controllers
             {
                 var createdPlayer = await _playerService.AddPlayerAsync(player);
                 
-                    return CreatedAtRoute("GetTeam",
+                    return CreatedAtRoute("GetPlayer",
                 new
                 {
-                    teamid = createdPlayer.Id
+                    playerid = createdPlayer.Id
                 },
                 createdPlayer
                 );

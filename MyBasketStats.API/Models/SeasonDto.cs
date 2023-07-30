@@ -6,9 +6,6 @@ namespace MyBasketStats.API.Models
 {
     public class SeasonDto
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public TeamDto? ChampionshipTeam { get; set; }
         public int ChampionshipTeamId { get; set; }

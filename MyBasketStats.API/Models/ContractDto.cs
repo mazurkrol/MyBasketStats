@@ -10,7 +10,5 @@ namespace MyBasketStats.API.Models
         public int Id { get; set; }
         public int Salary { get; set; }
         public List<SeasonDto> Seasons { get; set; }
-        public PlayerDto Player { get; set; }
-        public int PlayerId { get; set; }
     }
 }

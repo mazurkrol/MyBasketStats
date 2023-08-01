@@ -20,5 +20,7 @@ namespace MyBasketStats.API.Entities
         [ForeignKey("FinalsMvpId")]
         public Player? FinalsMvp { get; set; }
         public int? FinalsMvpId { get; set; }
+
+        public ICollection<Game> Games { get; set; } = new List<Game>();
     }
 }

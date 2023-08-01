@@ -38,6 +38,50 @@ namespace MyBasketStats.API.Migrations
                     b.ToTable("Contracts");
                 });
 
+            modelBuilder.Entity("MyBasketStats.API.Entities.Game", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("HomeTeamGameStatsheetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HomeTeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HomeTeamPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoadTeamGameStatsheetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoadTeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoadTeamPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SeasonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HomeTeamGameStatsheetId");
+
+                    b.HasIndex("HomeTeamId");
+
+                    b.HasIndex("RoadTeamGameStatsheetId");
+
+                    b.HasIndex("RoadTeamId");
+
+                    b.HasIndex("SeasonId");
+
+                    b.ToTable("Games");
+                });
+
             modelBuilder.Entity("MyBasketStats.API.Entities.Player", b =>
                 {
                     b.Property<int>("Id")
@@ -188,6 +232,85 @@ namespace MyBasketStats.API.Migrations
                     b.ToTable("Teams");
                 });
 
+            modelBuilder.Entity("MyBasketStats.API.Entities.TeamGameStatsheet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Assists")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FreeThrowsAttempted")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FreeThrowsMade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rebounds")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Steals")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ThreePointersAttempted")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ThreePointersMade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TwoPointersAttempted")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TwoPointersMade")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeamGameStatsheets");
+                });
+
+            modelBuilder.Entity("MyBasketStats.API.Entities.Game", b =>
+                {
+                    b.HasOne("MyBasketStats.API.Entities.TeamGameStatsheet", "HomeTeamGameStatsheet")
+                        .WithMany()
+                        .HasForeignKey("HomeTeamGameStatsheetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MyBasketStats.API.Entities.Team", "HomeTeam")
+                        .WithMany()
+                        .HasForeignKey("HomeTeamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MyBasketStats.API.Entities.TeamGameStatsheet", "RoadTeamGameStatsheet")
+                        .WithMany()
+                        .HasForeignKey("RoadTeamGameStatsheetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MyBasketStats.API.Entities.Team", "RoadTeam")
+                        .WithMany()
+                        .HasForeignKey("RoadTeamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MyBasketStats.API.Entities.Season", null)
+                        .WithMany("Games")
+                        .HasForeignKey("SeasonId");
+
+                    b.Navigation("HomeTeam");
+
+                    b.Navigation("HomeTeamGameStatsheet");
+
+                    b.Navigation("RoadTeam");
+
+                    b.Navigation("RoadTeamGameStatsheet");
+                });
+
             modelBuilder.Entity("MyBasketStats.API.Entities.Player", b =>
                 {
                     b.HasOne("MyBasketStats.API.Entities.Contract", "Contract")
@@ -251,6 +374,11 @@ namespace MyBasketStats.API.Migrations
             modelBuilder.Entity("MyBasketStats.API.Entities.Player", b =>
                 {
                     b.Navigation("SeasonalStatsheets");
+                });
+
+            modelBuilder.Entity("MyBasketStats.API.Entities.Season", b =>
+                {
+                    b.Navigation("Games");
                 });
 
             modelBuilder.Entity("MyBasketStats.API.Entities.Team", b =>

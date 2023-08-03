@@ -7,8 +7,11 @@ namespace MyBasketStats.API.Models
     public class GameDto
     {
         public int Id { get; set; }
+        public DateTime Date { get; set; }
         public int HomeTeamId { get; set; }
         public int RoadTeamId { get; set; }
+        public int TimeElapsedSeconds { get; set; }
+        public bool IsFinished { get; set; } = false;
 
         public int HomeTeamGameStatsheetId { get; set; }
         public int RoadTeamGameStatsheetId { get; set; }

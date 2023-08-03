@@ -22,7 +22,16 @@ namespace MyBasketStats.API.Services.SeasonServices
             await _seasonRepository.CreateSeasonalStatsheetsAsync(seasonToAdd);
             var seasonToReturn = _mapper.Map<SeasonDto>(seasonToAdd);
             return seasonToReturn;
+        }
 
+        public async Task AddGameToSeasonAsync(Game game)
+        {
+            await _seasonRepository.AddGameToSeasonAsync(game, game.Date.Year);           
+        }
+
+        public async Task<bool> SeasonExistsAsync(int year)
+        {
+            return await _seasonRepository.SeasonExistsAsync(year);
         }
     }
 }

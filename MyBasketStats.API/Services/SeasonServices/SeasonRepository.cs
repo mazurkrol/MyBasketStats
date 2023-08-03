@@ -1,4 +1,5 @@
-﻿using MyBasketStats.API.DbContexts;
+﻿using Microsoft.EntityFrameworkCore;
+using MyBasketStats.API.DbContexts;
 using MyBasketStats.API.Entities;
 
 namespace MyBasketStats.API.Services.SeasonServices
@@ -12,7 +13,7 @@ namespace MyBasketStats.API.Services.SeasonServices
         }
         public async Task CreateSeasonalStatsheetsAsync(Season season)
         {
-            foreach(Player player in  _context.Players) 
+            foreach (Player player in _context.Players)
             {
                 player.SeasonalStatsheets.Add(
                     new Statsheet()
@@ -27,6 +28,22 @@ namespace MyBasketStats.API.Services.SeasonServices
         {
             await _context.Seasons.AddAsync(season);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task AddGameToSeasonAsync(Game game, int year)
+        {
+            var season = await _context.Seasons
+                .Where(c => c.Year == year)
+                .FirstOrDefaultAsync();
+            season.Games.Add(game);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> SeasonExistsAsync(int year)
+        {
+            return await _context.Seasons
+                .Where(c => c.Year == year)
+                .AnyAsync();
         }
     }
 }

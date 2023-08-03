@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyBasketStats.API.DbContexts;
 
@@ -11,9 +12,10 @@ using MyBasketStats.API.DbContexts;
 namespace MyBasketStats.API.Migrations
 {
     [DbContext(typeof(MyBasketStatsContext))]
-    partial class MyBasketStatsContextModelSnapshot : ModelSnapshot
+    [Migration("20230802002753_TimeElapsed")]
+    partial class TimeElapsed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +48,7 @@ namespace MyBasketStats.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("HomeTeamGameStatsheetId")

@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Protocols;
 using MyBasketStats.API.Entities;
 using MyBasketStats.API.Models;
 using MyBasketStats.API.Services.Basic;
+using System.Collections.Concurrent;
+
 namespace MyBasketStats.API.Services.TeamServices
 {
     public class TeamService : BasicService<TeamDto,Team>, ITeamService
@@ -60,5 +63,6 @@ namespace MyBasketStats.API.Services.TeamServices
             team.Players.Remove(player);
             await _basicRepository.SaveChangesAsync();
         }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using MyBasketStats.API.Models;
+using MyBasketStats.API.Services.GameClockServices;
 using MyBasketStats.API.Services.GameServices;
 using MyBasketStats.API.Services.SeasonServices;
 using System;
@@ -15,10 +16,12 @@ namespace MyBasketStats.API.Controllers
     {
         private readonly IGameService _gameService;
         private readonly ISeasonService _seasonService;
-        public GameController(IGameService gameService, ISeasonService seasonService)
+        private readonly IGameClockService _gameClockService;
+        public GameController(IGameService gameService, ISeasonService seasonService, IGameClockService gameClockService)
         {
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _seasonService = seasonService ?? throw new ArgumentNullException(nameof(seasonService));
+            _gameClockService = gameClockService ?? throw new ArgumentNullException(nameof(gameClockService));
     }
 
         [HttpGet]
@@ -93,6 +96,37 @@ namespace MyBasketStats.API.Controllers
             else
             {
                 return BadRequest(ModelState);
+            }
+        }
+
+        [HttpPost("live/{gameid}/startclock")]
+        public async Task<ActionResult> StartGameClock(int gameid)
+        {
+            var result = await _gameService.CheckIfIdExistsAsync(gameid);
+            if (result.Item1)
+            {
+                await _gameClockService.StartGameClockAsync(gameid);
+                return Ok();
+            }
+            else
+            {
+                return NotFound($"Game with id={gameid} could not be found.");
+            }
+            
+        }
+
+        [HttpPost("live/{gameid}/stopclock")]
+        public async Task<ActionResult> StopGameClock(int gameid)
+        {
+            var result = await _gameService.CheckIfIdExistsAsync(gameid);
+            if (result.Item1)
+            {
+                _gameClockService.StopGameClock(gameid);
+                return Ok();
+            }
+            else
+            {
+                return NotFound($"Game with id={gameid} could not be found.");
             }
         }
     }

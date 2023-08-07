@@ -9,11 +9,13 @@ namespace MyBasketStats.API.Services.GameClockServices
     {
         private readonly IGameClockRepository _gameClockRepository;
         private readonly IDictionaryService _dictionaryService;
+        private readonly PeriodicTimer _timer;
 
         public GameClockService(IGameClockRepository gameClockRepository, IDictionaryService dictionaryService) 
         {
             _gameClockRepository = gameClockRepository;
             _dictionaryService = dictionaryService;
+            _timer = new PeriodicTimer(TimeSpan.FromMilliseconds(1000));
         }
         public async Task StartGameClockAsync(int gameid)
         {
@@ -43,10 +45,9 @@ namespace MyBasketStats.API.Services.GameClockServices
 
                 while (!cancellationToken.IsCancellationRequested)
                 {
+                    await _timer.WaitForNextTickAsync();
                     game.TimeElapsedSeconds++;
-                    var time = DateTime.UtcNow;
                     await _gameClockRepository.SaveChangesAsync();
-                    await Task.Delay(time.AddSeconds(1)-DateTime.UtcNow);
                     if (game.TimeElapsedSeconds%720 == 0)                    //end of quarter
                     {
                         StopGameClock(gameid);
@@ -55,5 +56,6 @@ namespace MyBasketStats.API.Services.GameClockServices
 
 
         }
+
     }
 }

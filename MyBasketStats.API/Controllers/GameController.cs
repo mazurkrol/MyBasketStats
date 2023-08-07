@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using MyBasketStats.API.Models;
+using MyBasketStats.API.Services.DictionaryServices;
 using MyBasketStats.API.Services.GameClockServices;
 using MyBasketStats.API.Services.GameServices;
 using MyBasketStats.API.Services.SeasonServices;
@@ -17,12 +18,14 @@ namespace MyBasketStats.API.Controllers
         private readonly IGameService _gameService;
         private readonly ISeasonService _seasonService;
         private readonly IGameClockService _gameClockService;
-        public GameController(IGameService gameService, ISeasonService seasonService, IGameClockService gameClockService)
+        private readonly IDictionaryService _dictionaryService;
+        public GameController(IGameService gameService, ISeasonService seasonService, IGameClockService gameClockService, IDictionaryService dictionaryService)
         {
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _seasonService = seasonService ?? throw new ArgumentNullException(nameof(seasonService));
             _gameClockService = gameClockService ?? throw new ArgumentNullException(nameof(gameClockService));
-    }
+            _dictionaryService = dictionaryService ?? throw new ArgumentNullException(nameof(dictionaryService));
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GameDto>>> GetPlayers()
@@ -104,8 +107,8 @@ namespace MyBasketStats.API.Controllers
         {
             var result = await _gameService.CheckIfIdExistsAsync(gameid);
             if (result.Item1)
-            {
-                await _gameClockService.StartGameClockAsync(gameid);
+            {               
+                _dictionaryService._startClockIds.Add(gameid);
                 return Ok();
             }
             else
@@ -121,7 +124,7 @@ namespace MyBasketStats.API.Controllers
             var result = await _gameService.CheckIfIdExistsAsync(gameid);
             if (result.Item1)
             {
-                _gameClockService.StopGameClock(gameid);
+                _dictionaryService._stopClockIds.Add(gameid);
                 return Ok();
             }
             else

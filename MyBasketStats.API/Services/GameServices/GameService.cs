@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using MyBasketStats.API.Entities;
 using MyBasketStats.API.Models;
-using MyBasketStats.API.Services.BackgroundServicesManager;
 using MyBasketStats.API.Services.Basic;
 using MyBasketStats.API.Services.DictionaryServices;
+using MyBasketStats.API.Services.GameClockServices;
 using MyBasketStats.API.Services.SeasonServices;
 
 namespace MyBasketStats.API.Services.GameServices
@@ -11,15 +11,15 @@ namespace MyBasketStats.API.Services.GameServices
     public class GameService : BasicService<GameDto, Game>, IGameService
     {
         private readonly IGameRepository _gameRepository;
-        private readonly IBackgroundServiceManager _backgroundServiceManager;
         private readonly IDictionaryService _dictionaryService;
+        private readonly IServiceScopeFactory _scopeFactory;
         public GameService(IMapper mapper, IBasicRepository<Game> basicRepository, 
-            IGameRepository gameRepository, IBackgroundServiceManager backgroundServiceManager,
-            IDictionaryService dictionaryService) : base(mapper, basicRepository)
+            IGameRepository gameRepository, IDictionaryService dictionaryService, 
+            IServiceScopeFactory scopeFactory) : base(mapper, basicRepository)
         {
             _gameRepository=gameRepository;
-            _backgroundServiceManager=backgroundServiceManager;
             _dictionaryService=dictionaryService;
+            _scopeFactory=scopeFactory;
         }
 
         public async Task<(GameDto,Game)> CreateGameAsync(GameForCreationDto game)
@@ -53,10 +53,7 @@ namespace MyBasketStats.API.Services.GameServices
             }
             else
             {
-                if(_dictionaryService.ActiveGamesIds.Count()<1)
-                {
-                    _backgroundServiceManager.StartBackgroundService();
-                }
+
                 _dictionaryService.ActiveGamesIds.Add(gameid);
                 gameToStart.GameState = GameStateEnum.Active;
                 await _basicRepository.SaveChangesAsync();
@@ -103,10 +100,7 @@ namespace MyBasketStats.API.Services.GameServices
                 }
                 _dictionaryService.ActiveGamesIds.Remove(gameid);
                 gameToFinish.GameState = GameStateEnum.Finished;
-                if (_dictionaryService.ActiveGamesIds.Count()<1)
-                {
-                    _backgroundServiceManager.StopBackgroundService();
-                }               
+              
                 await _basicRepository.SaveChangesAsync();
                 return new OperationResult<GameDto>()
                 {
@@ -132,7 +126,10 @@ namespace MyBasketStats.API.Services.GameServices
             }
             else
             {
-                _dictionaryService._startClockIds.Add(gameid);
+                var scope = _scopeFactory.CreateScope();
+
+                var _gameClockService = scope.ServiceProvider.GetRequiredService<IGameClockService>();
+                _gameClockService.StartGameClockAsync(gameid);
                 return new OperationResult<GameDto>()
                 {
                     IsSuccess = true,
@@ -154,7 +151,10 @@ namespace MyBasketStats.API.Services.GameServices
             }
             else
             {
-                _dictionaryService._stopClockIds.Add(gameid);
+                var scope = _scopeFactory.CreateScope();
+
+                var _gameClockService = scope.ServiceProvider.GetRequiredService<IGameClockService>();
+                _gameClockService.StopGameClock(gameid);
                 return new OperationResult<GameDto>()
                 {
                     IsSuccess = true,

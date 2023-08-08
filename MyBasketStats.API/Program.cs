@@ -18,7 +18,8 @@ using MyBasketStats.API.Services.Basic;
 using MyBasketStats.API.Entities;
 using MyBasketStats.API.Services.GameClockServices;
 using MyBasketStats.API.Services.DictionaryServices;
-using MyBasketStats.API.Services.BackgroundClockService;
+using MyBasketStats.API.Services.BackgroundClockServices;
+using MyBasketStats.API.Services.BackgroundServicesManager;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -38,7 +39,8 @@ builder.Services.AddControllers(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
-builder.Services.AddHostedService<BackgroundClockService>();
+builder.Services.AddSingleton<BackgroundClockService>();
+builder.Services.AddScoped<IBackgroundServiceManager, BackgroundServiceManager>();
 builder.Services.AddScoped<IGameClockService, GameClockService>();
 builder.Services.AddScoped<IGameClockRepository, GameClockRepository>();
 builder.Services.AddSingleton<IDictionaryService, DictionaryService>();

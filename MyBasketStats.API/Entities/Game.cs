@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyBasketStats.API.Entities
 {
+    public enum GameStateEnum { Scheduled, Active, Finished }
     public class Game
     {
         [Key]
@@ -14,8 +15,7 @@ namespace MyBasketStats.API.Entities
         public Team RoadTeam { get; set; }
         public int RoadTeamId { get; set; }
         public int TimeElapsedSeconds { get; set; } = 0;
-        public bool IsFinished { get; set; } = false;
-
+        public GameStateEnum GameState { get; set; } = 0;
         public TeamGameStatsheet HomeTeamGameStatsheet { get; set; } = new TeamGameStatsheet();
         public int HomeTeamGameStatsheetId { get; set; }
         public TeamGameStatsheet RoadTeamGameStatsheet { get; set; } = new TeamGameStatsheet();

@@ -102,34 +102,62 @@ namespace MyBasketStats.API.Controllers
             }
         }
 
-        [HttpPost("live/{gameid}/startclock")]
-        public async Task<ActionResult> StartGameClock(int gameid)
+        [HttpPost("live/{gameid}/start")]
+        public async Task<ActionResult<GameDto>> StartGame(int gameid)
         {
-            var result = await _gameService.CheckIfIdExistsAsync(gameid);
-            if (result.Item1)
-            {               
-                _dictionaryService._startClockIds.Add(gameid);
-                return Ok();
+            var result = await _gameService.StartGameAsync(gameid);
+            if(result.IsSuccess) 
+            {
+                return Ok(result.Data);
             }
             else
             {
-                return NotFound($"Game with id={gameid} could not be found.");
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
             }
             
         }
 
-        [HttpPost("live/{gameid}/stopclock")]
-        public async Task<ActionResult> StopGameClock(int gameid)
+        [HttpPost("live/{gameid}/finish")]
+        public async Task<ActionResult<GameDto>> FinishGame(int gameid)
         {
-            var result = await _gameService.CheckIfIdExistsAsync(gameid);
-            if (result.Item1)
+            var result = await _gameService.FinishGameAsync(gameid);
+            if (result.IsSuccess)
             {
-                _dictionaryService._stopClockIds.Add(gameid);
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+
+        }
+
+        [HttpPost("live/{gameid}/clock/start")]
+        public async Task<ActionResult> StartGameClock(int gameid)
+        {
+            var result = await _gameService.StartGameClock(gameid);
+            if (result.IsSuccess)
+            {
                 return Ok();
             }
             else
             {
-                return NotFound($"Game with id={gameid} could not be found.");
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+                       
+        }
+
+        [HttpPost("live/{gameid}/clock/stop")]
+        public async Task<ActionResult> StopGameClock(int gameid)
+        {
+            var result = await _gameService.StopGameClock(gameid);
+            if (result.IsSuccess)
+            {
+                return Ok();
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
             }
         }
     }

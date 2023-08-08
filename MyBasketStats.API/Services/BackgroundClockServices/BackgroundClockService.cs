@@ -2,7 +2,7 @@
 using MyBasketStats.API.Services.DictionaryServices;
 using MyBasketStats.API.Services.GameClockServices;
 
-namespace MyBasketStats.API.Services.BackgroundClockService
+namespace MyBasketStats.API.Services.BackgroundClockServices
 {
     public class BackgroundClockService : BackgroundService
     {
@@ -19,15 +19,7 @@ namespace MyBasketStats.API.Services.BackgroundClockService
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //using (var scope = _scopeFactory.CreateScope())
-            //{
-            //    var gameClockRepository = scope.ServiceProvider.GetRequiredService<IGameClockRepository>();
-
-            //}
-            
-            
-                
-
+           
                 while (!stoppingToken.IsCancellationRequested)
                 {
 

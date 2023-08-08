@@ -42,7 +42,7 @@ namespace MyBasketStats.API.Services.GameServices
                 };
             }
             else
-            if(gameToStart.GameState != GameStateEnum.Scheduled)
+            if(gameToStart.GameState != GameStateEnum.Scheduled && (_dictionaryService.ActiveGamesIds.Contains(gameToStart.Id) || gameToStart.GameState == GameStateEnum.Finished))
             {
                 return new OperationResult<GameDto>()
                 {
@@ -93,6 +93,14 @@ namespace MyBasketStats.API.Services.GameServices
             }
             else
             {
+                if(_dictionaryService._gameClocks.ContainsKey(gameid))
+                {
+                    await StopGameClock(gameid);
+                }
+                while(_dictionaryService._gameClocks.ContainsKey(gameid))
+                {
+                    await Task.Delay(100);
+                }
                 _dictionaryService.ActiveGamesIds.Remove(gameid);
                 gameToFinish.GameState = GameStateEnum.Finished;
                 if (_dictionaryService.ActiveGamesIds.Count()<1)

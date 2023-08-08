@@ -6,7 +6,7 @@ namespace MyBasketStats.API.Profiles
     {
         public ContractProfile() 
         {
-            CreateMap<Entities.Contract, Models.ContractDto>();
+            CreateMap<Entities.Contract, Models.ContractDto>().ForMember(dest => dest.SeasonsIds, opt => opt.MapFrom(src => src.ContractSeasons.Select(cs => cs.Season.Id).ToList()));
         }
     }
 }

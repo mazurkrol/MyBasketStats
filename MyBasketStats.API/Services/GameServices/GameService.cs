@@ -163,6 +163,62 @@ namespace MyBasketStats.API.Services.GameServices
             }
         }
 
+        public async Task<OperationResult<GameDto>> AddElapsedSeconds(int gameid, int seconds)
+        {
+            if (!_dictionaryService.ActiveGamesIds.Contains(gameid))
+            {
+                return new OperationResult<GameDto>()
+                {
+                    IsSuccess = false,
+                    HttpResponseCode = 404,
+                    ErrorMessage = $"Game with id={gameid} could not be found among active games."
+                };
+            }
+            else
+            {
+                var gameToModify = await _basicRepository.GetByIdAsync(gameid);
+                gameToModify.TimeElapsedSeconds += seconds;
+                await _basicRepository.SaveChangesAsync();
+                return new OperationResult<GameDto>()
+                {
+                    IsSuccess = true,
+                    HttpResponseCode = 200,
+                    Data = _mapper.Map<GameDto>(gameToModify)
+                };
+
+            }
+            
+        }
+
+        public async Task<OperationResult<GameDto>> SubtractElapsedSeconds(int gameid, int seconds)
+        {
+            if (!_dictionaryService.ActiveGamesIds.Contains(gameid))
+            {
+                return new OperationResult<GameDto>()
+                {
+                    IsSuccess = false,
+                    HttpResponseCode = 404,
+                    ErrorMessage = $"Game with id={gameid} could not be found among active games."
+                };
+            }
+            else
+            {
+                var gameToModify = await _basicRepository.GetByIdAsync(gameid);
+                gameToModify.TimeElapsedSeconds -= seconds;
+                await _basicRepository.SaveChangesAsync();
+                return new OperationResult<GameDto>()
+                {
+                    IsSuccess = true,
+                    HttpResponseCode = 200,
+                    Data = _mapper.Map<GameDto>(gameToModify)
+                };
+
+            }
+
+        }
+
+
+
 
     }
     

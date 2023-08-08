@@ -3,13 +3,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyBasketStats.API.Entities
 {
-    public class Contract
+    public class ContractSeason
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required]
-        public int SalaryInUsd { get; set; }
-        public ICollection<ContractSeason> ContractSeasons { get; set; } = new List<ContractSeason>();
+        public int ContractId { get; set; }
+        public Contract Contract { get; set; }
+
+        public int SeasonId { get; set; }
+        public Season Season { get; set; }
     }
 }

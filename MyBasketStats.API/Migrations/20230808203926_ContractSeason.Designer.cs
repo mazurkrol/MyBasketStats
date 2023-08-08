@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyBasketStats.API.DbContexts;
 
@@ -11,9 +12,10 @@ using MyBasketStats.API.DbContexts;
 namespace MyBasketStats.API.Migrations
 {
     [DbContext(typeof(MyBasketStatsContext))]
-    partial class MyBasketStatsContextModelSnapshot : ModelSnapshot
+    [Migration("20230808203926_ContractSeason")]
+    partial class ContractSeason
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,7 +60,7 @@ namespace MyBasketStats.API.Migrations
 
                     b.HasIndex("SeasonId");
 
-                    b.ToTable("ContractSeasons");
+                    b.ToTable("ContractSeason");
                 });
 
             modelBuilder.Entity("MyBasketStats.API.Entities.Game", b =>

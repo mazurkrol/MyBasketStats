@@ -36,6 +36,7 @@ namespace MyBasketStats.API.DbContexts
         }
         public DbSet<Game> Games { get; set; }
         public DbSet<TeamGameStatsheet> TeamGameStatsheets { get; set; }
+        public DbSet<ContractSeason> ContractSeasons { get; set; }
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Season> Seasons { get; set; }

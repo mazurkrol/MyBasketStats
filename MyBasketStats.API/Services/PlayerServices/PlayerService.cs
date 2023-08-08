@@ -35,7 +35,7 @@ namespace MyBasketStats.API.Services.PlayerServices
                 (bool,Season?) result = await _seasonService.CheckIfIdExistsAsync(id);
                 if(result.Item1)
                 {
-                    contractToAdd.Seasons.Add(result.Item2);
+                    contractToAdd.ContractSeasons.Add( new ContractSeason{Season = result.Item2 });
                 }
                 else
                 {

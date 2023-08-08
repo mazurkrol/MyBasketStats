@@ -4,7 +4,10 @@ using MyBasketStats.API.Models;
 using MyBasketStats.API.Services.Basic;
 using MyBasketStats.API.Services.DictionaryServices;
 using MyBasketStats.API.Services.GameClockServices;
+using MyBasketStats.API.Services.PlayerServices;
 using MyBasketStats.API.Services.SeasonServices;
+using MyBasketStats.API.Services.TeamServices;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyBasketStats.API.Services.GameServices
 {
@@ -13,13 +16,18 @@ namespace MyBasketStats.API.Services.GameServices
         private readonly IGameRepository _gameRepository;
         private readonly IDictionaryService _dictionaryService;
         private readonly IServiceScopeFactory _scopeFactory;
+        private readonly ITeamService _teamService;
+        private readonly IPlayerService _playerService;
         public GameService(IMapper mapper, IBasicRepository<Game> basicRepository, 
             IGameRepository gameRepository, IDictionaryService dictionaryService, 
-            IServiceScopeFactory scopeFactory) : base(mapper, basicRepository)
+            IServiceScopeFactory scopeFactory, ITeamService teamService,
+            IPlayerService playerService) : base(mapper, basicRepository)
         {
             _gameRepository=gameRepository;
             _dictionaryService=dictionaryService;
             _scopeFactory=scopeFactory;
+            _teamService =teamService;
+            _playerService=playerService;
         }
 
         public async Task<(GameDto,Game)> CreateGameAsync(GameForCreationDto game)
@@ -163,7 +171,7 @@ namespace MyBasketStats.API.Services.GameServices
             }
         }
 
-        public async Task<OperationResult<GameDto>> AddElapsedSeconds(int gameid, int seconds)
+        public async Task<OperationResult<GameDto>> AddElapsedSecondsAsync(int gameid, int seconds)
         {
             if (!_dictionaryService.ActiveGamesIds.Contains(gameid))
             {
@@ -190,7 +198,7 @@ namespace MyBasketStats.API.Services.GameServices
             
         }
 
-        public async Task<OperationResult<GameDto>> SubtractElapsedSeconds(int gameid, int seconds)
+        public async Task<OperationResult<GameDto>> SubtractElapsedSecondsAsync(int gameid, int seconds)
         {
             if (!_dictionaryService.ActiveGamesIds.Contains(gameid))
             {
@@ -214,7 +222,99 @@ namespace MyBasketStats.API.Services.GameServices
                 };
 
             }
+        }
+        public async Task<OperationResult<GameDto>> ValidateGameData(int gameid, int playerid, int teamid)
+        {
+            if (!_dictionaryService.ActiveGamesIds.Contains(gameid))
+            {
+                return new OperationResult<GameDto>()
+                {
+                    IsSuccess = false,
+                    HttpResponseCode = 404,
+                    ErrorMessage = $"Game with id={gameid} could not be found among active games."
+                };
+            }
+            else
+            {
+                var teamToCheck = await _teamService.GetEntityByIdAsync(teamid);
+                var gameToCheck = await _basicRepository.GetByIdAsync(gameid);
+                if (gameToCheck.HomeTeamId!=teamid&&gameToCheck.RoadTeamId!=teamid)
+                {
+                    return new OperationResult<GameDto>()
+                    {
+                        IsSuccess = false,
+                        HttpResponseCode = 404,
+                        ErrorMessage = $"Game with id={gameid} does not contain team with id={teamid}."
+                    };
+                }
+                else
+                if (teamToCheck.Players.Any(p => p.Id==playerid))
+                {
+                    return new OperationResult<GameDto>()
+                    {
+                        IsSuccess = true,
+                        HttpResponseCode = 200
+                    };
+                }
+                else
+                {
+                    return new OperationResult<GameDto>()
+                    {
+                        IsSuccess = false,
+                        HttpResponseCode = 404,
+                        ErrorMessage = $"Team with id={teamid} does not have player with id={playerid}."
+                    };
+                }
+                    
+            }
+            
 
+        }
+        public async Task<OperationResult<GameDto>> ThreePointerAttemptAsync(int gameid, int playerid, int teamid, bool issuccessful)
+        {
+            var result = await ValidateGameData(gameid, playerid, teamid);
+            if(!result.IsSuccess)
+            {
+                return result;
+            }
+            var playerToModify = await _playerService.GetEntityByIdAsync(playerid);
+            var gameToModify = await _basicRepository.GetByIdAsync(gameid);
+            var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
+            if (issuccessful && IsHomeTeam)
+            {
+                gameToModify.HomeTeamPoints+=3;
+                gameToModify.HomeTeamGameStatsheet.ThreePointersAttempted++;
+                gameToModify.HomeTeamGameStatsheet.ThreePointersMade++;
+            }
+            else if(issuccessful)
+            {
+                gameToModify.RoadTeamPoints+=3;
+                gameToModify.RoadTeamGameStatsheet.ThreePointersAttempted++;
+                gameToModify.RoadTeamGameStatsheet.ThreePointersMade++;
+            }
+            else if(IsHomeTeam)
+            {
+                gameToModify.HomeTeamGameStatsheet.ThreePointersAttempted++;
+            }
+            else
+            {
+                gameToModify.RoadTeamGameStatsheet.ThreePointersAttempted++;
+            }
+            playerToModify.TotalStatsheet.ThreePointersAttempted++;
+            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.Season.Year == (int)DateTime.Now.Year).FirstOrDefault();
+            SeasonalStatsheet.ThreePointersAttempted++;
+            if (issuccessful)
+            {                
+                playerToModify.TotalStatsheet.ThreePointersMade++;
+                SeasonalStatsheet.ThreePointersMade++;
+            }
+            await _basicRepository.SaveChangesAsync();
+            return new OperationResult<GameDto>()
+            {
+                IsSuccess = true,
+                HttpResponseCode = 200,
+                Data=_mapper.Map<GameDto>(gameToModify)
+            };
         }
 
 

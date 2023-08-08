@@ -133,12 +133,12 @@ namespace MyBasketStats.API.Controllers
         }
 
         [HttpPost("live/{gameid}/clock/start")]
-        public async Task<ActionResult> StartGameClock(int gameid)
+        public async Task<ActionResult<GameDto>> StartGameClock(int gameid)
         {
             var result = await _gameService.StartGameClock(gameid);
             if (result.IsSuccess)
             {
-                return Ok();
+                return Ok(result.Data);
             }
             else
             {
@@ -148,12 +148,54 @@ namespace MyBasketStats.API.Controllers
         }
 
         [HttpPost("live/{gameid}/clock/stop")]
-        public async Task<ActionResult> StopGameClock(int gameid)
+        public async Task<ActionResult<GameDto>> StopGameClock(int gameid)
         {
             var result = await _gameService.StopGameClock(gameid);
             if (result.IsSuccess)
             {
-                return Ok();
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("live/{gameid}/clock/add/{seconds}")]
+        public async Task<ActionResult> AddSecondsElapsed(int gameid, int seconds)
+        {
+           var result = await _gameService.AddElapsedSecondsAsync(gameid, seconds);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("live/{gameid}/clock/subtract/{seconds}")]
+        public async Task<ActionResult<GameDto>> SubtractSecondsElapsed(int gameid, int seconds)
+        {
+            var result = await _gameService.SubtractElapsedSecondsAsync(gameid, seconds);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("live/{gameid}/3pointer/{teamid}/{playerid}/{issuccessful}")]
+        public async Task<ActionResult<GameDto>> ThreePointerAttempt(int gameid, int teamid, int playerid, bool issuccessful)
+        {
+            var result = await _gameService.ThreePointerAttemptAsync(gameid, playerid, teamid, issuccessful);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
             }
             else
             {

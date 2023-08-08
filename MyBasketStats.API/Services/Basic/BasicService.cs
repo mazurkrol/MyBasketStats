@@ -26,6 +26,12 @@ namespace MyBasketStats.API.Services.Basic
             return itemToReturn;
         }
 
+        public async Task<TEntity> GetEntityByIdAsync(int id)
+        {
+            var item = await _basicRepository.GetByIdAsync(id);
+            return item;
+        }
+
         public async Task<IEnumerable<TDto>> GetAllAsync()
         {
             var listToReturn = await _basicRepository.GetAllAsync();

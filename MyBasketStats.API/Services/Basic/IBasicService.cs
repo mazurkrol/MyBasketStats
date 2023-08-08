@@ -8,5 +8,6 @@ namespace MyBasketStats.API.Services.Basic
         Task<IEnumerable<TDto>> GetAllAsync();
         Task<(bool, TEntity?)> CheckIfIdExistsAsync(int id);
         Task<OperationResult<TDto>> DeleteByIdAsync(int id);
+        Task<TEntity> GetEntityByIdAsync(int id);
     }
 }

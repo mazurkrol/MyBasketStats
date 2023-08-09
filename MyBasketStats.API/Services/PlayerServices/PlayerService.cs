@@ -19,7 +19,11 @@ namespace MyBasketStats.API.Services.PlayerServices
         public async Task<PlayerDto> AddPlayerAsync(PlayerForCreationDto player)
         {
             var playerToAdd = _mapper.Map<Player>(player);
-           
+            playerToAdd.SeasonalStatsheets.Add(
+                new Statsheet 
+                { 
+                    Season= await _seasonService.GetSeasonByYearAsync((int)DateTime.Now.Year) 
+                });
                 await _playerRepository.AddPlayerToDbAsync(playerToAdd);
                 var playerToReturn = _mapper.Map<PlayerDto>(playerToAdd);
                 return playerToReturn;

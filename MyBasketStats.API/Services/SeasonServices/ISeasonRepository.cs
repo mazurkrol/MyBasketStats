@@ -10,5 +10,6 @@ namespace MyBasketStats.API.Services.SeasonServices
         Task CreateSeasonalStatsheetsAsync(Season season);
         Task AddGameToSeasonAsync(Game game, int year);
         Task<bool> SeasonExistsAsync(int year);
+        Task<Season> GetSeasonByYearAsync(int year);
     }
 }

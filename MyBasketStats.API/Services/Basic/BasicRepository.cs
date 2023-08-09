@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyBasketStats.API.DbContexts;
+using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
 
 namespace MyBasketStats.API.Services.Basic
@@ -37,6 +38,18 @@ namespace MyBasketStats.API.Services.Basic
         public void DeleteAsync(TEntity entity)
         {
             _context.Set<TEntity>().Remove(entity);
+        }
+
+        public async Task<TEntity> GetByIdWithEagerLoadingAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var query = _context.Set<TEntity>().AsQueryable();
+
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return await query.SingleOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
     }
 }

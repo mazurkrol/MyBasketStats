@@ -133,12 +133,12 @@ namespace MyBasketStats.API.Controllers
         }
 
         [HttpPost("live/{gameid}/clock/start")]
-        public async Task<ActionResult<GameDto>> StartGameClock(int gameid)
+        public async Task<ActionResult> StartGameClock(int gameid)
         {
             var result = await _gameService.StartGameClock(gameid);
             if (result.IsSuccess)
             {
-                return Ok(result.Data);
+                return Ok();
             }
             else
             {
@@ -148,12 +148,12 @@ namespace MyBasketStats.API.Controllers
         }
 
         [HttpPost("live/{gameid}/clock/stop")]
-        public async Task<ActionResult<GameDto>> StopGameClock(int gameid)
+        public async Task<ActionResult> StopGameClock(int gameid)
         {
             var result = await _gameService.StopGameClock(gameid);
             if (result.IsSuccess)
             {
-                return Ok(result.Data);
+                return Ok();
             }
             else
             {

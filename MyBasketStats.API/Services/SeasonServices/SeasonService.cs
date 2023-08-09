@@ -33,5 +33,10 @@ namespace MyBasketStats.API.Services.SeasonServices
         {
             return await _seasonRepository.SeasonExistsAsync(year);
         }
+
+        public async Task<Season> GetSeasonByYearAsync(int year)
+        {
+            return await _seasonRepository.GetSeasonByYearAsync(year);
+        }
     }
 }

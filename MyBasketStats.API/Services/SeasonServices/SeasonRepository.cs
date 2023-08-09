@@ -45,5 +45,10 @@ namespace MyBasketStats.API.Services.SeasonServices
                 .Where(c => c.Year == year)
                 .AnyAsync();
         }
+
+        public async Task<Season> GetSeasonByYearAsync(int year)
+        {
+            return await _context.Seasons.Where(c => c.Year == year).FirstOrDefaultAsync();
+        }
     }
 }

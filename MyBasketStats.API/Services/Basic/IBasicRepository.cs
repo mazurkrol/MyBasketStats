@@ -1,4 +1,6 @@
-﻿namespace MyBasketStats.API.Services.Basic
+﻿using System.Linq.Expressions;
+
+namespace MyBasketStats.API.Services.Basic
 {
     public interface IBasicRepository<TEntity> where TEntity : class
     {
@@ -7,5 +9,6 @@
         Task<(bool,TEntity?)> CheckIfIdExistsAsync(int id);
         void DeleteAsync(TEntity entity);
         Task SaveChangesAsync();
+        Task<TEntity> GetByIdWithEagerLoadingAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties);
     }
 }

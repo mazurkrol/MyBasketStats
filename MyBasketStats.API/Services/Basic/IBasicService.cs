@@ -1,4 +1,5 @@
 ﻿using MyBasketStats.API.Models;
+using System.Linq.Expressions;
 
 namespace MyBasketStats.API.Services.Basic
 {
@@ -9,5 +10,6 @@ namespace MyBasketStats.API.Services.Basic
         Task<(bool, TEntity?)> CheckIfIdExistsAsync(int id);
         Task<OperationResult<TDto>> DeleteByIdAsync(int id);
         Task<TEntity> GetEntityByIdAsync(int id);
+        Task<TEntity> GetEntityByIdWithEagerLoadingAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties);
     }
 }

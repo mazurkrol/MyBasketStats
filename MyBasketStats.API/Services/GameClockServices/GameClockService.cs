@@ -7,15 +7,15 @@ namespace MyBasketStats.API.Services.GameClockServices
 {
     public class GameClockService : IGameClockService
     {
-        private readonly IGameClockRepository _gameClockRepository;
         private readonly IDictionaryService _dictionaryService;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly PeriodicTimer _timer;
 
-        public GameClockService(IGameClockRepository gameClockRepository, IDictionaryService dictionaryService) 
+        public GameClockService( IDictionaryService dictionaryService, IServiceScopeFactory scopeFactory) 
         {
-            _gameClockRepository = gameClockRepository;
             _dictionaryService = dictionaryService;
             _timer = new PeriodicTimer(TimeSpan.FromMilliseconds(1000));
+            _scopeFactory = scopeFactory;
         }
         public async Task StartGameClockAsync(int gameid)
         {
@@ -41,13 +41,17 @@ namespace MyBasketStats.API.Services.GameClockServices
         {
             
             
-                var game = await _gameClockRepository.GetGameEntityAsync(gameid);
+                
 
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     await _timer.WaitForNextTickAsync();
+                    var scope = _scopeFactory.CreateScope();
+                    var _gameClockRepository = scope.ServiceProvider.GetRequiredService<IGameClockRepository>();                
+                    var game = await _gameClockRepository.GetGameEntityAsync(gameid);
                     game.TimeElapsedSeconds++;
                     await _gameClockRepository.SaveChangesAsync();
+                    scope.Dispose();
                     if (game.TimeElapsedSeconds%720 == 0)                    //end of quarter
                     {
                         StopGameClock(gameid);

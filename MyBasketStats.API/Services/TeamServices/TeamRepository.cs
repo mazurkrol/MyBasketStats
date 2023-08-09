@@ -30,5 +30,11 @@ namespace MyBasketStats.API.Services.TeamServices
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Team> GetTeamWithPlayersAsync(int id)
+        {
+            var teamToReturn = await _context.Teams.Include(t => t.Players).Where(i => i.Id == id).FirstOrDefaultAsync();
+            return teamToReturn;
+        }
+
     }
 }

@@ -18,16 +18,18 @@ namespace MyBasketStats.API.Services.GameServices
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ITeamService _teamService;
         private readonly IPlayerService _playerService;
+        private readonly ISeasonRepository _seasonRepository;
         public GameService(IMapper mapper, IBasicRepository<Game> basicRepository, 
             IGameRepository gameRepository, IDictionaryService dictionaryService, 
             IServiceScopeFactory scopeFactory, ITeamService teamService,
-            IPlayerService playerService) : base(mapper, basicRepository)
+            IPlayerService playerService, ISeasonRepository seasonRepository) : base(mapper, basicRepository)
         {
             _gameRepository=gameRepository;
             _dictionaryService=dictionaryService;
             _scopeFactory=scopeFactory;
             _teamService =teamService;
             _playerService=playerService;
+            _seasonRepository=seasonRepository;
         }
 
         public async Task<(GameDto,Game)> CreateGameAsync(GameForCreationDto game)
@@ -236,7 +238,7 @@ namespace MyBasketStats.API.Services.GameServices
             }
             else
             {
-                var teamToCheck = await _teamService.GetEntityByIdAsync(teamid);
+                var teamToCheck = await _teamService.GetEntityByIdWithEagerLoadingAsync(teamid, t => t.Players);
                 var gameToCheck = await _basicRepository.GetByIdAsync(gameid);
                 if (gameToCheck.HomeTeamId!=teamid&&gameToCheck.RoadTeamId!=teamid)
                 {
@@ -277,7 +279,7 @@ namespace MyBasketStats.API.Services.GameServices
             {
                 return result;
             }
-            var playerToModify = await _playerService.GetEntityByIdAsync(playerid);
+            var playerToModify = await _playerService.GetEntityByIdWithEagerLoadingAsync(playerid, t => t.SeasonalStatsheets, c => c.TotalStatsheet);
             var gameToModify = await _basicRepository.GetByIdAsync(gameid);
             var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
             if (issuccessful && IsHomeTeam)
@@ -301,7 +303,8 @@ namespace MyBasketStats.API.Services.GameServices
                 gameToModify.RoadTeamGameStatsheet.ThreePointersAttempted++;
             }
             playerToModify.TotalStatsheet.ThreePointersAttempted++;
-            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.Season.Year == (int)DateTime.Now.Year).FirstOrDefault();
+            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.Now.Year);
+            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.SeasonId == CurrentSeason.Id).FirstOrDefault();
             SeasonalStatsheet.ThreePointersAttempted++;
             if (issuccessful)
             {                

@@ -5,6 +5,7 @@ using MyBasketStats.API.Entities;
 using MyBasketStats.API.Models;
 using MyBasketStats.API.Services.PlayerServices;
 using MyBasketStats.API.Services.TeamServices;
+using System.Linq.Expressions;
 using System.Reflection.Metadata;
 
 namespace MyBasketStats.API.Services.Basic
@@ -30,6 +31,11 @@ namespace MyBasketStats.API.Services.Basic
         {
             var item = await _basicRepository.GetByIdAsync(id);
             return item;
+        }
+
+        public async Task<TEntity> GetEntityByIdWithEagerLoadingAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            return await _basicRepository.GetByIdWithEagerLoadingAsync(id, includeProperties);
         }
 
         public async Task<IEnumerable<TDto>> GetAllAsync()
@@ -66,5 +72,6 @@ namespace MyBasketStats.API.Services.Basic
                 };
             }
         }
+
     }
 }

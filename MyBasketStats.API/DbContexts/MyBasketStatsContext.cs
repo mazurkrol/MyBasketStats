@@ -33,6 +33,16 @@ namespace MyBasketStats.API.DbContexts
                .HasForeignKey(g => g.RoadTeamId)
                .OnDelete(DeleteBehavior.Restrict)
                .IsRequired();
+            modelBuilder.Entity<Game>()
+               .HasOne(g => g.WinningTeam)
+               .WithMany()
+               .HasForeignKey(g => g.WinningTeamId)
+               .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Game>()
+               .HasOne(g => g.LosingTeam)
+               .WithMany()
+               .HasForeignKey(g => g.LosingTeamId)
+               .OnDelete(DeleteBehavior.Restrict);
         }
         public DbSet<Game> Games { get; set; }
         public DbSet<TeamGameStatsheet> TeamGameStatsheets { get; set; }

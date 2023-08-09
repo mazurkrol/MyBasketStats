@@ -17,5 +17,8 @@ namespace MyBasketStats.API.Entities
         public int Rebounds { get; set; } = 0;
         public int Steals { get; set; } = 0;
         public int Assists { get; set; } = 0;
+        public int Blocks { get; set; } = 0;
+        public int Turnovers { get; set; } = 0;
+        public int Fouls { get; set; } = 0;
     }   
 }

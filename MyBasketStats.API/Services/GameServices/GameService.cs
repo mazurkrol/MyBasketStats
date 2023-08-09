@@ -95,28 +95,61 @@ namespace MyBasketStats.API.Services.GameServices
                 {
                     IsSuccess = false,
                     HttpResponseCode = 409,
-                    ErrorMessage = $"Game with id={gameid} is {gameToFinish.GameState.ToString()}. Only Active games can be started."
+                    ErrorMessage = $"Game with id={gameid} is {gameToFinish.GameState.ToString()}. Only Active games can be finished."
                 };
             }
-            else
+            else if(gameToFinish.HomeTeamPoints>gameToFinish.RoadTeamPoints)
             {
-                if(_dictionaryService._gameClocks.ContainsKey(gameid))
+                if (_dictionaryService._gameClocks.ContainsKey(gameid))
                 {
                     await StopGameClock(gameid);
                 }
-                while(_dictionaryService._gameClocks.ContainsKey(gameid))
+                while (_dictionaryService._gameClocks.ContainsKey(gameid))
                 {
                     await Task.Delay(100);
                 }
                 _dictionaryService.ActiveGamesIds.Remove(gameid);
                 gameToFinish.GameState = GameStateEnum.Finished;
-              
+                gameToFinish.WinningTeamId = gameToFinish.HomeTeamId;
+                gameToFinish.LosingTeamId = gameToFinish.RoadTeamId;
                 await _basicRepository.SaveChangesAsync();
                 return new OperationResult<GameDto>()
                 {
                     IsSuccess = true,
                     HttpResponseCode = 200,
                     Data = _mapper.Map<GameDto>(gameToFinish)
+                };
+            }
+            else if (gameToFinish.HomeTeamPoints < gameToFinish.RoadTeamPoints)
+            {
+                if (_dictionaryService._gameClocks.ContainsKey(gameid))
+                {
+                    await StopGameClock(gameid);
+                }
+                while (_dictionaryService._gameClocks.ContainsKey(gameid))
+                {
+                    await Task.Delay(100);
+                }
+                _dictionaryService.ActiveGamesIds.Remove(gameid);
+                gameToFinish.GameState = GameStateEnum.Finished;
+                gameToFinish.WinningTeamId = gameToFinish.RoadTeamId;
+                gameToFinish.LosingTeamId = gameToFinish.HomeTeamId;
+                await _basicRepository.SaveChangesAsync();
+                return new OperationResult<GameDto>()
+                {
+                    IsSuccess = true,
+                    HttpResponseCode = 200,
+                    Data = _mapper.Map<GameDto>(gameToFinish)
+                };
+            }
+            else
+            {
+
+                return new OperationResult<GameDto>()
+                {
+                    IsSuccess = false,
+                    HttpResponseCode = 403,
+                    ErrorMessage = $"Game cannot result in draw."
                 };
             }
 
@@ -272,6 +305,289 @@ namespace MyBasketStats.API.Services.GameServices
             
 
         }
+
+        public async Task<OperationResult<GameDto>> FoulAsync(int gameid, int playerid, int teamid)
+        {
+            var result = await ValidateGameData(gameid, playerid, teamid);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+            var playerToModify = await _playerService.GetEntityByIdWithEagerLoadingAsync(playerid, t => t.SeasonalStatsheets, c => c.TotalStatsheet);
+            var gameToModify = await GetEntityByIdWithEagerLoadingAsync(gameid, t => t.HomeTeamGameStatsheet, c => c.RoadTeamGameStatsheet);
+            var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
+            if (IsHomeTeam)
+            {
+                gameToModify.HomeTeamGameStatsheet.Fouls++;
+            }
+            else
+            {
+                gameToModify.RoadTeamGameStatsheet.Fouls++;
+            }
+            playerToModify.TotalStatsheet.Fouls++;
+            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.UtcNow.Year);
+            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.SeasonId == CurrentSeason.Id).FirstOrDefault();
+            SeasonalStatsheet.Fouls++;
+            await _basicRepository.SaveChangesAsync();
+            return new OperationResult<GameDto>()
+            {
+                IsSuccess = true,
+                HttpResponseCode = 200,
+                Data=_mapper.Map<GameDto>(gameToModify)
+            };
+        }
+
+        public async Task<OperationResult<GameDto>> StealAsync(int gameid, int playerid, int teamid)
+        {
+            var result = await ValidateGameData(gameid, playerid, teamid);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+            var playerToModify = await _playerService.GetEntityByIdWithEagerLoadingAsync(playerid, t => t.SeasonalStatsheets, c => c.TotalStatsheet);
+            var gameToModify = await GetEntityByIdWithEagerLoadingAsync(gameid, t => t.HomeTeamGameStatsheet, c => c.RoadTeamGameStatsheet);
+            var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
+            if (IsHomeTeam)
+            {
+                gameToModify.HomeTeamGameStatsheet.Steals++;
+            }
+            else
+            {
+                gameToModify.RoadTeamGameStatsheet.Steals++;
+            }
+            playerToModify.TotalStatsheet.Steals++;
+            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.UtcNow.Year);
+            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.SeasonId == CurrentSeason.Id).FirstOrDefault();
+            SeasonalStatsheet.Steals++;
+            await _basicRepository.SaveChangesAsync();
+            return new OperationResult<GameDto>()
+            {
+                IsSuccess = true,
+                HttpResponseCode = 200,
+                Data=_mapper.Map<GameDto>(gameToModify)
+            };
+        }
+
+        public async Task<OperationResult<GameDto>> TurnoverAsync(int gameid, int playerid, int teamid)
+        {
+            var result = await ValidateGameData(gameid, playerid, teamid);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+            var playerToModify = await _playerService.GetEntityByIdWithEagerLoadingAsync(playerid, t => t.SeasonalStatsheets, c => c.TotalStatsheet);
+            var gameToModify = await GetEntityByIdWithEagerLoadingAsync(gameid, t => t.HomeTeamGameStatsheet, c => c.RoadTeamGameStatsheet);
+            var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
+            if (IsHomeTeam)
+            {
+                gameToModify.HomeTeamGameStatsheet.Turnovers++;
+            }
+            else
+            {
+                gameToModify.RoadTeamGameStatsheet.Turnovers++;
+            }
+            playerToModify.TotalStatsheet.Turnovers++;
+            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.UtcNow.Year);
+            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.SeasonId == CurrentSeason.Id).FirstOrDefault();
+            SeasonalStatsheet.Turnovers++;
+            await _basicRepository.SaveChangesAsync();
+            return new OperationResult<GameDto>()
+            {
+                IsSuccess = true,
+                HttpResponseCode = 200,
+                Data=_mapper.Map<GameDto>(gameToModify)
+            };
+        }
+
+        public async Task<OperationResult<GameDto>> AssistAsync(int gameid, int playerid, int teamid)
+        {
+            var result = await ValidateGameData(gameid, playerid, teamid);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+            var playerToModify = await _playerService.GetEntityByIdWithEagerLoadingAsync(playerid, t => t.SeasonalStatsheets, c => c.TotalStatsheet);
+            var gameToModify = await GetEntityByIdWithEagerLoadingAsync(gameid, t => t.HomeTeamGameStatsheet, c => c.RoadTeamGameStatsheet);
+            var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
+            if (IsHomeTeam)
+            {
+                gameToModify.HomeTeamGameStatsheet.Assists++;
+            }
+            else
+            {
+                gameToModify.RoadTeamGameStatsheet.Assists++;
+            }
+            playerToModify.TotalStatsheet.Assists++;
+            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.UtcNow.Year);
+            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.SeasonId == CurrentSeason.Id).FirstOrDefault();
+            SeasonalStatsheet.Assists++;
+            await _basicRepository.SaveChangesAsync();
+            return new OperationResult<GameDto>()
+            {
+                IsSuccess = true,
+                HttpResponseCode = 200,
+                Data=_mapper.Map<GameDto>(gameToModify)
+            };
+        }
+
+        public async Task<OperationResult<GameDto>> BlockAsync(int gameid, int playerid, int teamid)
+        {
+            var result = await ValidateGameData(gameid, playerid, teamid);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+            var playerToModify = await _playerService.GetEntityByIdWithEagerLoadingAsync(playerid, t => t.SeasonalStatsheets, c => c.TotalStatsheet);
+            var gameToModify = await GetEntityByIdWithEagerLoadingAsync(gameid, t => t.HomeTeamGameStatsheet, c => c.RoadTeamGameStatsheet);
+            var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
+            if (IsHomeTeam)
+            {
+                gameToModify.HomeTeamGameStatsheet.Blocks++;
+            }
+            else
+            {
+                gameToModify.RoadTeamGameStatsheet.Blocks++;
+            }
+            playerToModify.TotalStatsheet.Blocks++;
+            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.UtcNow.Year);
+            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.SeasonId == CurrentSeason.Id).FirstOrDefault();
+            SeasonalStatsheet.Blocks++;
+            await _basicRepository.SaveChangesAsync();
+            return new OperationResult<GameDto>()
+            {
+                IsSuccess = true,
+                HttpResponseCode = 200,
+                Data=_mapper.Map<GameDto>(gameToModify)
+            };
+        }
+
+        public async Task<OperationResult<GameDto>> ReboundAsync(int gameid, int playerid, int teamid)
+        {
+            var result = await ValidateGameData(gameid, playerid, teamid);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+            var playerToModify = await _playerService.GetEntityByIdWithEagerLoadingAsync(playerid, t => t.SeasonalStatsheets, c => c.TotalStatsheet);
+            var gameToModify = await GetEntityByIdWithEagerLoadingAsync(gameid, t => t.HomeTeamGameStatsheet, c => c.RoadTeamGameStatsheet);
+            var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
+            if (IsHomeTeam)
+            {
+                gameToModify.HomeTeamGameStatsheet.Rebounds++;
+            }
+            else
+            {
+                gameToModify.RoadTeamGameStatsheet.Rebounds++;
+            }
+            playerToModify.TotalStatsheet.Rebounds++;
+            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.UtcNow.Year);
+            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.SeasonId == CurrentSeason.Id).FirstOrDefault();
+            SeasonalStatsheet.Rebounds++;
+            await _basicRepository.SaveChangesAsync();
+            return new OperationResult<GameDto>()
+            {
+                IsSuccess = true,
+                HttpResponseCode = 200,
+                Data=_mapper.Map<GameDto>(gameToModify)
+            };
+        }
+
+        public async Task<OperationResult<GameDto>> FreeThrowAttemptAsync(int gameid, int playerid, int teamid, bool issuccessful)
+        {
+            var result = await ValidateGameData(gameid, playerid, teamid);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+            var playerToModify = await _playerService.GetEntityByIdWithEagerLoadingAsync(playerid, t => t.SeasonalStatsheets, c => c.TotalStatsheet);
+            var gameToModify = await GetEntityByIdWithEagerLoadingAsync(gameid, t => t.HomeTeamGameStatsheet, c => c.RoadTeamGameStatsheet);
+            var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
+            if (issuccessful && IsHomeTeam)
+            {
+                gameToModify.HomeTeamPoints+=1;
+                gameToModify.HomeTeamGameStatsheet.FreeThrowsAttempted++;
+                gameToModify.HomeTeamGameStatsheet.FreeThrowsMade++;
+            }
+            else if (issuccessful)
+            {
+                gameToModify.RoadTeamPoints+=1;
+                gameToModify.RoadTeamGameStatsheet.FreeThrowsAttempted++;
+                gameToModify.RoadTeamGameStatsheet.FreeThrowsMade++;
+            }
+            else if (IsHomeTeam)
+            {
+                gameToModify.HomeTeamGameStatsheet.FreeThrowsAttempted++;
+            }
+            else
+            {
+                gameToModify.RoadTeamGameStatsheet.FreeThrowsAttempted++;
+            }
+            playerToModify.TotalStatsheet.FreeThrowsAttempted++;
+            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.UtcNow.Year);
+            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.SeasonId == CurrentSeason.Id).FirstOrDefault();
+            SeasonalStatsheet.FreeThrowsAttempted++;
+            if (issuccessful)
+            {
+                playerToModify.TotalStatsheet.FreeThrowsMade++;
+                SeasonalStatsheet.FreeThrowsMade++;
+            }
+            await _basicRepository.SaveChangesAsync();
+            return new OperationResult<GameDto>()
+            {
+                IsSuccess = true,
+                HttpResponseCode = 200,
+                Data=_mapper.Map<GameDto>(gameToModify)
+            };
+        }
+
+        public async Task<OperationResult<GameDto>> TwoPointerAttemptAsync(int gameid, int playerid, int teamid, bool issuccessful)
+        {
+            var result = await ValidateGameData(gameid, playerid, teamid);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+            var playerToModify = await _playerService.GetEntityByIdWithEagerLoadingAsync(playerid, t => t.SeasonalStatsheets, c => c.TotalStatsheet);
+            var gameToModify = await GetEntityByIdWithEagerLoadingAsync(gameid, t=>t.HomeTeamGameStatsheet, c=>c.RoadTeamGameStatsheet);
+            var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
+            if (issuccessful && IsHomeTeam)
+            {
+                gameToModify.HomeTeamPoints+=2;
+                gameToModify.HomeTeamGameStatsheet.TwoPointersAttempted++;
+                gameToModify.HomeTeamGameStatsheet.TwoPointersMade++;
+            }
+            else if (issuccessful)
+            {
+                gameToModify.RoadTeamPoints+=2;
+                gameToModify.RoadTeamGameStatsheet.TwoPointersAttempted++;
+                gameToModify.RoadTeamGameStatsheet.TwoPointersMade++;
+            }
+            else if (IsHomeTeam)
+            {
+                gameToModify.HomeTeamGameStatsheet.TwoPointersAttempted++;
+            }
+            else
+            {
+                gameToModify.RoadTeamGameStatsheet.TwoPointersAttempted++;
+            }
+            playerToModify.TotalStatsheet.TwoPointersAttempted++;
+            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.UtcNow.Year);
+            var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.SeasonId == CurrentSeason.Id).FirstOrDefault();
+            SeasonalStatsheet.TwoPointersAttempted++;
+            if (issuccessful)
+            {
+                playerToModify.TotalStatsheet.TwoPointersMade++;
+                SeasonalStatsheet.TwoPointersMade++;
+            }
+            await _basicRepository.SaveChangesAsync();
+            return new OperationResult<GameDto>()
+            {
+                IsSuccess = true,
+                HttpResponseCode = 200,
+                Data=_mapper.Map<GameDto>(gameToModify)
+            };
+        }
+
         public async Task<OperationResult<GameDto>> ThreePointerAttemptAsync(int gameid, int playerid, int teamid, bool issuccessful)
         {
             var result = await ValidateGameData(gameid, playerid, teamid);
@@ -280,7 +596,7 @@ namespace MyBasketStats.API.Services.GameServices
                 return result;
             }
             var playerToModify = await _playerService.GetEntityByIdWithEagerLoadingAsync(playerid, t => t.SeasonalStatsheets, c => c.TotalStatsheet);
-            var gameToModify = await _basicRepository.GetByIdAsync(gameid);
+            var gameToModify = await GetEntityByIdWithEagerLoadingAsync(gameid, t => t.HomeTeamGameStatsheet, c => c.RoadTeamGameStatsheet);
             var IsHomeTeam = (bool)(gameToModify.HomeTeamId == teamid);
             if (issuccessful && IsHomeTeam)
             {
@@ -303,7 +619,7 @@ namespace MyBasketStats.API.Services.GameServices
                 gameToModify.RoadTeamGameStatsheet.ThreePointersAttempted++;
             }
             playerToModify.TotalStatsheet.ThreePointersAttempted++;
-            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.Now.Year);
+            var CurrentSeason = await _seasonRepository.GetSeasonByYearAsync((int)DateTime.UtcNow.Year);
             var SeasonalStatsheet = playerToModify.SeasonalStatsheets.Where(s => s.SeasonId == CurrentSeason.Id).FirstOrDefault();
             SeasonalStatsheet.ThreePointersAttempted++;
             if (issuccessful)

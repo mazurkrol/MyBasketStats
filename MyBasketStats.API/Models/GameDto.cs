@@ -12,7 +12,8 @@ namespace MyBasketStats.API.Models
         public int RoadTeamId { get; set; }
         public int TimeElapsedSeconds { get; set; }
         public GameStateEnum GameState { get; set; }
-
+        public int WinningTeamId { get; set; }
+        public int LosingTeamId { get; set; }
         public int HomeTeamGameStatsheetId { get; set; }
         public int RoadTeamGameStatsheetId { get; set; }
 

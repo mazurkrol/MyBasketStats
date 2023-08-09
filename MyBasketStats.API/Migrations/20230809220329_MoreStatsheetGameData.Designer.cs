@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyBasketStats.API.DbContexts;
 
@@ -11,9 +12,10 @@ using MyBasketStats.API.DbContexts;
 namespace MyBasketStats.API.Migrations
 {
     [DbContext(typeof(MyBasketStatsContext))]
-    partial class MyBasketStatsContextModelSnapshot : ModelSnapshot
+    [Migration("20230809220329_MoreStatsheetGameData")]
+    partial class MoreStatsheetGameData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,9 +86,6 @@ namespace MyBasketStats.API.Migrations
                     b.Property<int>("HomeTeamPoints")
                         .HasColumnType("int");
 
-                    b.Property<int?>("LosingTeamId")
-                        .HasColumnType("int");
-
                     b.Property<int>("RoadTeamGameStatsheetId")
                         .HasColumnType("int");
 
@@ -102,24 +101,17 @@ namespace MyBasketStats.API.Migrations
                     b.Property<int>("TimeElapsedSeconds")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WinningTeamId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HomeTeamGameStatsheetId");
 
                     b.HasIndex("HomeTeamId");
 
-                    b.HasIndex("LosingTeamId");
-
                     b.HasIndex("RoadTeamGameStatsheetId");
 
                     b.HasIndex("RoadTeamId");
 
                     b.HasIndex("SeasonId");
-
-                    b.HasIndex("WinningTeamId");
 
                     b.ToTable("Games");
                 });
@@ -360,11 +352,6 @@ namespace MyBasketStats.API.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MyBasketStats.API.Entities.Team", "LosingTeam")
-                        .WithMany()
-                        .HasForeignKey("LosingTeamId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("MyBasketStats.API.Entities.TeamGameStatsheet", "RoadTeamGameStatsheet")
                         .WithMany()
                         .HasForeignKey("RoadTeamGameStatsheetId")
@@ -381,22 +368,13 @@ namespace MyBasketStats.API.Migrations
                         .WithMany("Games")
                         .HasForeignKey("SeasonId");
 
-                    b.HasOne("MyBasketStats.API.Entities.Team", "WinningTeam")
-                        .WithMany()
-                        .HasForeignKey("WinningTeamId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("HomeTeam");
 
                     b.Navigation("HomeTeamGameStatsheet");
 
-                    b.Navigation("LosingTeam");
-
                     b.Navigation("RoadTeam");
 
                     b.Navigation("RoadTeamGameStatsheet");
-
-                    b.Navigation("WinningTeam");
                 });
 
             modelBuilder.Entity("MyBasketStats.API.Entities.Player", b =>

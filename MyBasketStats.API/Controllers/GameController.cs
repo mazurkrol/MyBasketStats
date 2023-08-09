@@ -202,5 +202,117 @@ namespace MyBasketStats.API.Controllers
                 return StatusCode(result.HttpResponseCode, result.ErrorMessage);
             }
         }
+
+        [HttpPost("live/{gameid}/2pointer/{teamid}/{playerid}/{issuccessful}")]
+        public async Task<ActionResult<GameDto>> TwoPointerAttempt(int gameid, int teamid, int playerid, bool issuccessful)
+        {
+            var result = await _gameService.TwoPointerAttemptAsync(gameid, playerid, teamid, issuccessful);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("live/{gameid}/freethrow/{teamid}/{playerid}/{issuccessful}")]
+        public async Task<ActionResult<GameDto>> FreeThrowAttempt(int gameid, int teamid, int playerid, bool issuccessful)
+        {
+            var result = await _gameService.FreeThrowAttemptAsync(gameid, playerid, teamid, issuccessful);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("live/{gameid}/block/{teamid}/{playerid}")]
+        public async Task<ActionResult<GameDto>> Block(int gameid, int teamid, int playerid)
+        {
+            var result = await _gameService.BlockAsync(gameid, playerid, teamid);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("live/{gameid}/assist/{teamid}/{playerid}")]
+        public async Task<ActionResult<GameDto>> Assist(int gameid, int teamid, int playerid)
+        {
+            var result = await _gameService.AssistAsync(gameid, playerid, teamid);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("live/{gameid}/rebound/{teamid}/{playerid}")]
+        public async Task<ActionResult<GameDto>> Rebound(int gameid, int teamid, int playerid)
+        {
+            var result = await _gameService.ReboundAsync(gameid, playerid, teamid);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("live/{gameid}/steal/{teamid}/{playerid}")]
+        public async Task<ActionResult<GameDto>> Steal(int gameid, int teamid, int playerid)
+        {
+            var result = await _gameService.StealAsync(gameid, playerid, teamid);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("live/{gameid}/turnover/{teamid}/{playerid}")]
+        public async Task<ActionResult<GameDto>> Turnover(int gameid, int teamid, int playerid)
+        {
+            var result = await _gameService.TurnoverAsync(gameid, playerid, teamid);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
+
+        [HttpPost("live/{gameid}/foul/{teamid}/{playerid}")]
+        public async Task<ActionResult<GameDto>> Foul(int gameid, int teamid, int playerid)
+        {
+            var result = await _gameService.FoulAsync(gameid, playerid, teamid);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return StatusCode(result.HttpResponseCode, result.ErrorMessage);
+            }
+        }
     }
 }

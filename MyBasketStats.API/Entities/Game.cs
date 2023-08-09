@@ -14,6 +14,10 @@ namespace MyBasketStats.API.Entities
         public int HomeTeamId { get; set; }
         public Team RoadTeam { get; set; }
         public int RoadTeamId { get; set; }
+        public Team? WinningTeam { get; set; }
+        public int? WinningTeamId { get; set; }
+        public Team? LosingTeam { get; set; }
+        public int? LosingTeamId { get; set; }
         public int TimeElapsedSeconds { get; set; } = 0;
         public GameStateEnum GameState { get; set; } = 0;
         public TeamGameStatsheet HomeTeamGameStatsheet { get; set; } = new TeamGameStatsheet();

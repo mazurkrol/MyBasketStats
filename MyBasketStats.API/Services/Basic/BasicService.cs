@@ -49,7 +49,7 @@ namespace MyBasketStats.API.Services.Basic
         {
             return await _basicRepository.CheckIfIdExistsAsync(id);
         }
-        public async Task<OperationResult<TDto>> DeleteByIdAsync(int id)
+        public virtual async Task<OperationResult<TDto>> DeleteByIdAsync(int id)
         {
             (bool exists, TEntity ? entity) result = await _basicRepository.CheckIfIdExistsAsync(id);
             if (result.exists == false)

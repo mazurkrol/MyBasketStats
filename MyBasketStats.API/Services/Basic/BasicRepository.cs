@@ -2,6 +2,7 @@
 using MyBasketStats.API.DbContexts;
 using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
+using System.Xml.Linq;
 
 namespace MyBasketStats.API.Services.Basic
 {
@@ -39,6 +40,7 @@ namespace MyBasketStats.API.Services.Basic
         {
             _context.Set<TEntity>().Remove(entity);
         }
+     
 
         public async Task<TEntity> GetByIdWithEagerLoadingAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties)
         {

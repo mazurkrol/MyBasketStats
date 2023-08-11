@@ -8,6 +8,7 @@ using MyBasketStats.API.Services.PlayerServices;
 using MyBasketStats.API.Services.SeasonServices;
 using MyBasketStats.API.Services.TeamServices;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace MyBasketStats.API.Services.GameServices
 {
@@ -37,6 +38,28 @@ namespace MyBasketStats.API.Services.GameServices
             var gameToAdd = _mapper.Map<Game>(game);
             await _gameRepository.AddGameAsync(gameToAdd);
             return (_mapper.Map<GameDto>(gameToAdd),gameToAdd);
+        }
+
+        public override async Task<OperationResult<GameDto>> DeleteByIdAsync(int id)
+        {
+            var result = await _basicRepository.GetByIdWithEagerLoadingAsync(id);
+            if (result == null)
+            {
+                return new OperationResult<GameDto>
+                {
+                    IsSuccess = false,
+                    ErrorMessage = $"Entity of type {typeof(Game).Name} with id={id} does not exist.",
+                    HttpResponseCode = 404
+                };
+            }
+            else
+            {
+                _gameRepository.DeleteAsync(result.Id);
+                return new OperationResult<GameDto>
+                {
+                    IsSuccess = true
+                };
+            }
         }
 
         public async Task<OperationResult<GameDto>> StartGameAsync(int gameid)

@@ -4,7 +4,7 @@ using MyBasketStats.API.Services.Basic;
 
 namespace MyBasketStats.API.Services.SeasonServices
 {
-    public interface ISeasonService : IBasicService<SeasonDto, Season, SeasonDto>
+    public interface ISeasonService : IBasicService<SeasonDto, Season, SeasonWithGameIdsDto>
     {
         Task<SeasonDto> AddSeasonAsync(SeasonForCreationDto season);
         Task AddGameToSeasonAsync(Game game);

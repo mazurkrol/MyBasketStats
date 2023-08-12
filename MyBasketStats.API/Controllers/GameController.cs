@@ -38,7 +38,7 @@ namespace MyBasketStats.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var item = await _gameService.GetByIdAsync(gameid);
+                var item = await _gameService.GetExtendedByIdWithEagerLoadingAsync(gameid);
                 if (item!=null)
                 {
                     return Ok(item);

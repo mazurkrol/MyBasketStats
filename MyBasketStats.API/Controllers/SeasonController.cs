@@ -25,11 +25,11 @@ namespace MyBasketStats.API.Controllers
             return Ok(seasons);
         }
         [HttpGet("{seasonid}", Name = "GetSeason")]
-        public async Task<ActionResult<SeasonDto>> GetSeason(int seasonid)
+        public async Task<ActionResult<SeasonWithGameIdsDto>> GetSeason(int seasonid)
         {
             if (ModelState.IsValid)
             {
-                var item = await _seasonService.GetByIdWithEagerLoadingAsync(seasonid, c=> c.Games);
+                var item = await _seasonService.GetExtendedByIdWithEagerLoadingAsync(seasonid, c=> c.Games);
                 if (item!=null)
                 {
                     return Ok(item);

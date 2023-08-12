@@ -7,7 +7,6 @@ namespace MyBasketStats.API.Models
     public class StatsheetDto
     {
         public int Id { get; set; }
-        public SeasonDto? Season { get; set; }
         public int? SeasonId { get; set; }
         public int GamesPlayed { get; set; }
         public int TwoPointersMade { get; set; }
@@ -27,7 +26,7 @@ namespace MyBasketStats.API.Models
         {
             get
             {
-                return Points/2*(ThreePointersAttempted+TwoPointersAttempted+0.44*FreeThrowsAttempted);
+                return Points/(2*(ThreePointersAttempted+TwoPointersAttempted+0.44*FreeThrowsAttempted));
             }
         }
         public int Rebounds { get; set; }

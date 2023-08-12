@@ -18,17 +18,17 @@ namespace MyBasketStats.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TeamDto>>> GetPlayers()
+        public async Task<ActionResult<IEnumerable<PlayerDto>>> GetPlayers()
         {
             var players = await _playerService.GetAllAsync();
             return Ok(players);
         }
         [HttpGet("{playerid}", Name = "GetPlayer")]
-        public async Task<ActionResult<TeamDto>> GetPlayer(int playerid)
+        public async Task<ActionResult<PlayerWithStatsheetsIdsDto>> GetPlayer(int playerid)
         {
             if (ModelState.IsValid)
             {
-                var item = await _playerService.GetByIdAsync(playerid);
+                var item = await _playerService.GetExtendedByIdWithEagerLoadingAsync(playerid, c=>c.SeasonalStatsheets);
                 if (item!=null)
                 {
                     return Ok(item);

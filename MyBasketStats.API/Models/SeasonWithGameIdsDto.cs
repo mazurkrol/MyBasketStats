@@ -1,10 +1,6 @@
-﻿using MyBasketStats.API.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
-namespace MyBasketStats.API.Models
+﻿namespace MyBasketStats.API.Models
 {
-    public class SeasonDto
+    public class SeasonWithGameIdsDto
     {
         public int Id { get; set; }
         public int Year { get; set; }
@@ -12,5 +8,6 @@ namespace MyBasketStats.API.Models
         public int ChampionshipTeamId { get; set; }
         public PlayerDto? FinalsMvp { get; set; }
         public int FinalsMvpId { get; set; }
+        public List<int>? GamesIds { get; set; }
     }
 }

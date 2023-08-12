@@ -20,10 +20,10 @@ namespace MyBasketStats.API.Services.Basic
             _basicRepository=basicRepository;
         }
 
-        public async Task<TExtendedDto> GetByIdAsync(int id)
+        public async Task<TDto> GetByIdAsync(int id)
         {
             var item = await _basicRepository.GetByIdAsync(id);
-            var itemToReturn = _mapper.Map<TExtendedDto>(item);
+            var itemToReturn = _mapper.Map<TDto>(item);
             return itemToReturn;
         }
 
@@ -37,6 +37,13 @@ namespace MyBasketStats.API.Services.Basic
         {
             var item = await _basicRepository.GetByIdWithEagerLoadingAsync(id, includeProperties);
             var itemToReturn = _mapper.Map<TDto>(item);
+            return itemToReturn;
+        }
+
+        public async Task<TExtendedDto> GetExtendedByIdWithEagerLoadingAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var item = await _basicRepository.GetByIdWithEagerLoadingAsync(id, includeProperties);
+            var itemToReturn = _mapper.Map<TExtendedDto>(item);
             return itemToReturn;
         }
 

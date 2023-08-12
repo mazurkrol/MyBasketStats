@@ -20,7 +20,7 @@
         {
             get
             {
-                return Points/2*(ThreePointersAttempted+TwoPointersAttempted+0.44*FreeThrowsAttempted);
+                return Points/(2*(ThreePointersAttempted+TwoPointersAttempted+0.44*FreeThrowsAttempted));
             }
         }
         public int Rebounds { get; set; }

@@ -5,7 +5,7 @@ using MyBasketStats.API.Services.Basic;
 
 namespace MyBasketStats.API.Services.SeasonServices
 {
-    public class SeasonService : BasicService<SeasonDto, Season>, ISeasonService
+    public class SeasonService : BasicService<SeasonDto, Season, SeasonDto>, ISeasonService
     {
         private readonly ISeasonRepository _seasonRepository;
 

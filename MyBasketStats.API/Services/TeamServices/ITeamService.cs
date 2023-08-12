@@ -4,7 +4,7 @@ using MyBasketStats.API.Services.Basic;
 
 namespace MyBasketStats.API.Services.TeamServices
 {
-    public interface ITeamService : IBasicService<TeamDto,Team>
+    public interface ITeamService : IBasicService<TeamDto,Team, TeamDto>
     {      
 
         Task<OperationResult<TeamDto>> AddTeamAsync(TeamForCreationDto team);

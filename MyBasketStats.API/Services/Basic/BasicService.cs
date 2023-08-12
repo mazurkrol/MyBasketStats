@@ -10,7 +10,7 @@ using System.Reflection.Metadata;
 
 namespace MyBasketStats.API.Services.Basic
 {
-    public class BasicService<TDto, TEntity> where TEntity : class where TDto : class
+    public class BasicService<TDto, TEntity, TExtendedDto> where TEntity : class where TDto : class where TExtendedDto : class
     {
         protected readonly IMapper _mapper;
         protected readonly IBasicRepository<TEntity> _basicRepository;
@@ -20,10 +20,10 @@ namespace MyBasketStats.API.Services.Basic
             _basicRepository=basicRepository;
         }
 
-        public async Task<TDto> GetByIdAsync(int id)
+        public async Task<TExtendedDto> GetByIdAsync(int id)
         {
             var item = await _basicRepository.GetByIdAsync(id);
-            var itemToReturn = _mapper.Map<TDto>(item);
+            var itemToReturn = _mapper.Map<TExtendedDto>(item);
             return itemToReturn;
         }
 
@@ -31,6 +31,13 @@ namespace MyBasketStats.API.Services.Basic
         {
             var item = await _basicRepository.GetByIdAsync(id);
             return item;
+        }
+
+        public async Task<TDto> GetByIdWithEagerLoadingAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var item = await _basicRepository.GetByIdWithEagerLoadingAsync(id, includeProperties);
+            var itemToReturn = _mapper.Map<TDto>(item);
+            return itemToReturn;
         }
 
         public async Task<TEntity> GetEntityByIdWithEagerLoadingAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties)

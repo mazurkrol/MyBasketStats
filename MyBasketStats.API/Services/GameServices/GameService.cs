@@ -12,7 +12,7 @@ using System.Linq.Expressions;
 
 namespace MyBasketStats.API.Services.GameServices
 {
-    public class GameService : BasicService<GameDto, Game>, IGameService
+    public class GameService : BasicService<GameDto, Game, GameWithStatsheetsDto>, IGameService
     {
         private readonly IGameRepository _gameRepository;
         private readonly IDictionaryService _dictionaryService;

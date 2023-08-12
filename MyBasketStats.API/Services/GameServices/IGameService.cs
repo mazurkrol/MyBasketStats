@@ -4,7 +4,7 @@ using MyBasketStats.API.Services.Basic;
 
 namespace MyBasketStats.API.Services.GameServices
 {
-    public interface IGameService : IBasicService<GameDto, Game>
+    public interface IGameService : IBasicService<GameDto, Game, GameWithStatsheetsDto>
     {
         Task<(GameDto,Game)> CreateGameAsync(GameForCreationDto game);
         Task<OperationResult<GameDto>> StartGameAsync(int gameid);

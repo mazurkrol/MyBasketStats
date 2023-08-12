@@ -12,5 +12,6 @@ namespace MyBasketStats.API.Models
         public int ChampionshipTeamId { get; set; }
         public PlayerDto? FinalsMvp { get; set; }
         public int FinalsMvpId { get; set; }
+        public List<int>? GamesIds {get; set;}
     }
 }

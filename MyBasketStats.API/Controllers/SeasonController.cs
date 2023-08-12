@@ -29,7 +29,7 @@ namespace MyBasketStats.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var item = await _seasonService.GetByIdAsync(seasonid);
+                var item = await _seasonService.GetByIdWithEagerLoadingAsync(seasonid, c=> c.Games);
                 if (item!=null)
                 {
                     return Ok(item);

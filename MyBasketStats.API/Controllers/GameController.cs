@@ -28,13 +28,13 @@ namespace MyBasketStats.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GameDto>>> GetPlayers()
+        public async Task<ActionResult<IEnumerable<GameDto>>> GetGames()
         {
             var games = await _gameService.GetAllAsync();
             return Ok(games);
         }
         [HttpGet("{gameid}", Name = "GetGame")]
-        public async Task<ActionResult<GameDto>> GetGame(int gameid)
+        public async Task<ActionResult<GameWithStatsheetsDto>> GetGame(int gameid)
         {
             if (ModelState.IsValid)
             {

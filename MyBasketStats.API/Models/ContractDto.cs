@@ -9,6 +9,5 @@ namespace MyBasketStats.API.Models
     {
         public int Id { get; set; }
         public int SalaryInUsd { get; set; }
-        public List<int> SeasonsIds { get; set; }
     }
 }

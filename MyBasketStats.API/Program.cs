@@ -18,6 +18,7 @@ using MyBasketStats.API.Services.Basic;
 using MyBasketStats.API.Entities;
 using MyBasketStats.API.Services.GameClockServices;
 using MyBasketStats.API.Services.DictionaryServices;
+using MyBasketStats.API.Services.ContractServices;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -50,11 +51,13 @@ builder.Services.AddScoped<ISeasonService, SeasonService>();
 builder.Services.AddScoped<ISeasonRepository, SeasonRepository>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IContractService, ContractService>();
 builder.Services.AddScoped<IBasicRepository<Player>, BasicRepository<Player>>();
 builder.Services.AddScoped<IBasicRepository<Team>, BasicRepository<Team>>();
 builder.Services.AddScoped<IBasicRepository<Statsheet>, BasicRepository<Statsheet>>();
 builder.Services.AddScoped<IBasicRepository<Season>, BasicRepository<Season>>();
 builder.Services.AddScoped<IBasicRepository<Game>, BasicRepository<Game>>();
+builder.Services.AddScoped<IBasicRepository<Contract>, BasicRepository<Contract>>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<MyBasketStatsContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:MyBasketStatsDBConnectionString"]));

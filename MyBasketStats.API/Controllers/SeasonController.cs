@@ -46,6 +46,20 @@ namespace MyBasketStats.API.Controllers
             }
         }
 
+        [HttpPost("list", Name = "GetSeasonList")]
+        public async Task<ActionResult<IEnumerable<SeasonWithGameIdsDto>>> GetSeasonsList(IEnumerable<int> ids)
+        {
+            var item = await _seasonService.GetExtendedListWithEagerLoadingAsync(ids, c=> c.Games);
+            if (item!=null)
+            {
+                return Ok(item);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpDelete("{seasontodeleteid}")]
         public async Task<ActionResult> DeleteSeason(int seasontodeleteid)
         {

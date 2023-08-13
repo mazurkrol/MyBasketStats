@@ -6,7 +6,7 @@ using MyBasketStats.API.Services.SeasonServices;
 
 namespace MyBasketStats.API.Services.PlayerServices
 {
-    public class PlayerService : BasicService<PlayerDto, Player, PlayerWithStatsheetsIdsDto>, IPlayerService
+    public class PlayerService : BasicService<PlayerDto, Player, PlayerWithStatsheetsDto>, IPlayerService
     {
         private readonly IPlayerRepository _playerRepository;
         private readonly ISeasonService _seasonService;

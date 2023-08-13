@@ -24,7 +24,7 @@ namespace MyBasketStats.API.Controllers
             return Ok(players);
         }
         [HttpGet("{playerid}", Name = "GetPlayer")]
-        public async Task<ActionResult<PlayerWithStatsheetsIdsDto>> GetPlayer(int playerid)
+        public async Task<ActionResult<PlayerWithStatsheetsDto>> GetPlayer(int playerid)
         {
             if (ModelState.IsValid)
             {
@@ -42,6 +42,20 @@ namespace MyBasketStats.API.Controllers
             else
             {
                 return BadRequest(ModelState);
+            }
+        }
+
+        [HttpPost("list", Name = "GetPlayersList")]
+        public async Task<ActionResult<IEnumerable<PlayerWithStatsheetsDto>>> GetPlayersList(IEnumerable<int> ids)
+        {
+            var item = await _playerService.GetExtendedListWithEagerLoadingAsync(ids, c=> c.SeasonalStatsheets);
+            if (item!=null)
+            {
+                return Ok(item);
+            }
+            else
+            {
+                return NotFound();
             }
         }
 

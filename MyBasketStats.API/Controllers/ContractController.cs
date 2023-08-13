@@ -46,18 +46,32 @@ namespace MyBasketStats.API.Controllers
             }
         }
 
-        [HttpDelete("{contracttodeleteid}")]
-        public async Task<ActionResult> DeleteContract(int contracttodeleteid)
+        [HttpPost("list", Name = "GetContractsList")]
+        public async Task<ActionResult<IEnumerable<ContractWithSeasonIdsDto>>> GetContractsList(IEnumerable<int> ids)
         {
-            var operationResult = await _contractService.DeleteByIdAsync(contracttodeleteid);
-            if (operationResult.IsSuccess)
+            var item = await _contractService.GetExtendedListWithEagerLoadingAsync(ids, c => c.ContractSeasons);
+            if (item!=null)
             {
-                return NoContent();
+                return Ok(item);
             }
             else
             {
-                return StatusCode(operationResult.HttpResponseCode, operationResult.ErrorMessage);
+                return NotFound();
             }
         }
+
+        //[HttpDelete("{contracttodeleteid}")]
+        //public async Task<ActionResult> DeleteContract(int contracttodeleteid)
+        //{
+        //    var operationResult = await _contractService.DeleteByIdAsync(contracttodeleteid);
+        //    if (operationResult.IsSuccess)
+        //    {
+        //        return NoContent();
+        //    }
+        //    else
+        //    {
+        //        return StatusCode(operationResult.HttpResponseCode, operationResult.ErrorMessage);
+        //    }
+        //}
     }
 }

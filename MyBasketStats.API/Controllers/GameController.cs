@@ -55,6 +55,20 @@ namespace MyBasketStats.API.Controllers
             }
         }
 
+        [HttpPost("list", Name = "GetGamesList")]
+        public async Task<ActionResult<IEnumerable<GameWithStatsheetsDto>>> GetGamesList(IEnumerable<int> ids)
+        {
+            var item = await _gameService.GetExtendedListWithEagerLoadingAsync(ids);
+            if (item!=null)
+            {
+                return Ok(item);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpDelete("{gametodeleteid}")]
         public async Task<ActionResult> DeleteGame(int gametodeleteid)
         {

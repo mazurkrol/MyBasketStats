@@ -30,11 +30,11 @@ namespace MyBasketStats.API.Controllers
             return Ok(teams);
         }
         [HttpGet("{teamid}", Name = "GetTeam")]
-        public async Task<ActionResult<TeamDto>> GetTeam(int teamid)
+        public async Task<ActionResult<TeamWithPlayersDto>> GetTeam(int teamid)
         {
             if (ModelState.IsValid)
             {
-                var item = await _teamService.GetByIdAsync(teamid);
+                var item = await _teamService.GetExtendedByIdWithEagerLoadingAsync(teamid, c => c.Players);
                 if (item!=null)
                 {
                     return Ok(item);
@@ -48,6 +48,20 @@ namespace MyBasketStats.API.Controllers
             else
             {
                 return BadRequest(ModelState);
+            }
+        }
+
+        [HttpPost("list", Name = "GetTeamList")]
+        public async Task<ActionResult<IEnumerable<TeamWithPlayersDto>>> GetTeamsList(IEnumerable<int> ids)
+        {
+            var item = await _teamService.GetExtendedListWithEagerLoadingAsync(ids, c => c.Players);
+            if (item!=null)
+            {
+                return Ok(item);
+            }
+            else
+            {
+                return NotFound();
             }
         }
 

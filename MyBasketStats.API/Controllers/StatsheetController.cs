@@ -46,6 +46,20 @@ namespace MyBasketStats.API.Controllers
             }
         }
 
+        [HttpPost("list", Name = "GetStatsheetList")]
+        public async Task<ActionResult<IEnumerable<StatsheetDto>>> GetStatsheetsList(IEnumerable<int> ids)
+        {
+            var item = await _statsheetService.GetExtendedListWithEagerLoadingAsync(ids);
+            if (item!=null)
+            {
+                return Ok(item);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpDelete("{statsheettodeleteid}")]
         public async Task<ActionResult> DeleteStatsheet(int statsheettodeleteid)
         {

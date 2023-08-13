@@ -8,7 +8,7 @@ namespace MyBasketStats.API.Profiles
         {
             CreateMap<Models.PlayerForCreationDto, Entities.Player>();
             CreateMap<Entities.Player, Models.PlayerDto>();
-            CreateMap<Entities.Player, Models.PlayerWithStatsheetsIdsDto>()
+            CreateMap<Entities.Player, Models.PlayerWithStatsheetsDto>()
                 .ForMember(dest => dest.SeasonalStatsheets, opt => opt.MapFrom(src => src.SeasonalStatsheets));
         }
     }

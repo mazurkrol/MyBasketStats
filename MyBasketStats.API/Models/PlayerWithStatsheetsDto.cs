@@ -2,7 +2,7 @@
 
 namespace MyBasketStats.API.Models
 {
-    public class PlayerWithStatsheetsIdsDto
+    public class PlayerWithStatsheetsDto
     {
         public int Id { get; set; }
 

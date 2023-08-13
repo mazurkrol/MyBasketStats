@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 
 namespace MyBasketStats.API.Services.TeamServices
 {
-    public class TeamService : BasicService<TeamDto, Team, TeamDto>, ITeamService
+    public class TeamService : BasicService<TeamDto, Team, TeamWithPlayersDto>, ITeamService
     {
         private readonly ITeamRepository _teamRepository;
         public TeamService(IMapper mapper, IBasicRepository<Team> basicRepository, ITeamRepository teamRepository) : base(mapper,basicRepository)

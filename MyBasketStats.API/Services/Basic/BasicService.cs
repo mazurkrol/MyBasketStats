@@ -59,6 +59,17 @@ namespace MyBasketStats.API.Services.Basic
             return finalListToReturn;
         }
 
+        public async Task<IEnumerable<TExtendedDto>> GetExtendedListWithEagerLoadingAsync(IEnumerable<int> ids, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            List<TExtendedDto> list = new List<TExtendedDto>();
+            foreach (var id in ids) 
+            {
+                var add = await _basicRepository.GetByIdWithEagerLoadingAsync(id, includeProperties);
+                list.Add(_mapper.Map<TExtendedDto>(add));
+            }
+            return list;
+        }
+
         public async Task<(bool,TEntity?)> CheckIfIdExistsAsync(int id)
         {
             return await _basicRepository.CheckIfIdExistsAsync(id);

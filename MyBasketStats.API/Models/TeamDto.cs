@@ -8,7 +8,6 @@ namespace MyBasketStats.API.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<PlayerDto> Players { get; set; } = new List<PlayerDto>();
 
     }
 }

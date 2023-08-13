@@ -25,6 +25,8 @@ namespace MyBasketStats.API.Services.Basic
             return await _context.Set<TEntity>().ToListAsync();
         }
 
+
+
         public async Task<(bool,TEntity?)> CheckIfIdExistsAsync(int id)
         {
             var entity = await _context.Set<TEntity>().FindAsync(id);
@@ -53,5 +55,6 @@ namespace MyBasketStats.API.Services.Basic
 
             return await query.SingleOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
+
     }
 }

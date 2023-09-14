@@ -70,21 +70,6 @@ public class MyBasketStatsAPIClient
         return content;
     }
 
-    public async Task<string> DeleteResourceAsync(string route, int id)
-    {
-        var request = new HttpRequestMessage(
-                       HttpMethod.Delete,
-                                  $"{route}/{id}");
-        request.Headers.Accept.Add(
-                       new MediaTypeWithQualityHeaderValue("application/json"));
-
-        var response = await _client.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-
-        var content = await response.Content.ReadAsStringAsync();
-
-        return content;
-    }
 
     public async Task<string> CreateResourceAsync(string route, string serializedResourceToCreate)
     {        

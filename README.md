@@ -2,6 +2,7 @@
 Web API that allows coaches, players and fans to track various data and players' performance statistics of local basketball league.  Currently under development.
 
 1. My idea
+   
    I wanted to create a tool for basketball enthusiasts. There are many fans passionate about numbers in sports and my
    web application is supposed to serve their needs and provide tooling for officials to post game data. Assuming
    my league gets big there would be some betting websites interacting with my league events. Thats why I opted for

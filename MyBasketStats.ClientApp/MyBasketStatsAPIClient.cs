@@ -10,14 +10,9 @@ namespace MyBasketStats.Client;
 public class MyBasketStatsAPIClient
 {
     private HttpClient _client;
-    private readonly JsonSerializerOptionsWrapper _jsonSerializerOptionsWrapper;
-    public MyBasketStatsAPIClient(HttpClient client,
-        JsonSerializerOptionsWrapper jsonSerializerOptionsWrapper,
-        string route)
+    public MyBasketStatsAPIClient(HttpClient client)
     {
         _client = client;
-        _jsonSerializerOptionsWrapper = jsonSerializerOptionsWrapper ??
-            throw new ArgumentNullException(nameof(jsonSerializerOptionsWrapper));
         _client.BaseAddress = new Uri("https://localhost:7091");
         _client.Timeout = new TimeSpan(0, 0, 30);
     }

@@ -1,8 +1,19 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model HomeViewModel?
+@if(Model != null)
+{
+	<partial name="_SearchResult" model="@Model.Game" />
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+	<div class="text-center">
+		<h1 class="display-4">Welcome</h1>
+		<p>Use this site to search for basketball games.</p>
+	</div>
+<form asp-controller="Game" asp-action="SearchGame" method="post">
+        <label for="id">id:</label>
+        <input type="number" name="id" id="id" />
+        
+        <br />
+        <input type="submit" value="Submit" />
+</form>
+
